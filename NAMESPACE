@@ -1,0 +1,3 @@
+useDynLib(OptimalDesign)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
