@@ -1,8 +1,6 @@
 optimalDesign <- function(candidate, initial, n = length(initial), N = 100)
 {
 
-    z <- 0
-
     M <- XtoM(DtoX(candidate[initial, ]))
     M_inv <- solve(M)
     all <- 1:nrow(candidate)
