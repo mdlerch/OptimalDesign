@@ -1,11 +1,13 @@
 optimalDesign <- function(candidate, initial, n = length(initial), N = 100)
 {
 
-    M <- XtoM(DtoX(candidate[initial, ]))
+    initialIndexes = initialDesign(candidate, n)
+    
+    M = XtoM(DtoX(candidate[initialIndexes, ]))
     M_inv <- solve(M)
     all <- 1:nrow(candidate)
 
-    current <- initial
+    current <- initialIndexes
 
     for (i in 1:N)
     {
@@ -72,4 +74,21 @@ tryToSwitch <- function(current, new, old, candidate)
     } else {
         return(FALSE)
     }
+}
+
+#
+# Returns the index of points in candidate set with the largest leverages. This prevents
+# singular initial designs for the fedorov algorithm
+#
+# The leverages (actually the square roots of leverages) are computed by taking the l2 norm 
+# (aka Frobenius norm) of the left singular row vectors obtained from the SVD of the 
+# candidate set matrix
+#
+
+initialDesign = function(candidate, designSize)
+{
+	l2norm = function(v) norm(as.matrix(v), 'f')
+	leverages = apply(svd(candidate)$u, 1, l2norm) # actually square roots of leverages
+	
+	order(leverages, decreasing=T)[1:designSize]
 }
