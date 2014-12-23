@@ -2,7 +2,6 @@ optimalDesign <- function(candidate, initial, n = length(initial), N = 100)
 {
 
     initialIndexes = initialDesign(candidate, n)
-    
     M = XtoM(DtoX(candidate[initialIndexes, ]))
     M_inv <- solve(M)
     all <- 1:nrow(candidate)
@@ -85,10 +84,10 @@ tryToSwitch <- function(current, new, old, candidate)
 # candidate set matrix
 #
 
-initialDesign = function(candidate, designSize)
+initialDesignR <- function(candidate, designSize)
 {
-	l2norm = function(v) norm(as.matrix(v), 'f')
-	leverages = apply(svd(candidate)$u, 1, l2norm) # actually square roots of leverages
-	
-	order(leverages, decreasing=T)[1:designSize]
+    l2norm <- function(v) norm(as.matrix(v), 'f')
+    leverages <- apply(svd(candidate)$u, 1, l2norm) # actually square roots of leverages
+
+    order(leverages, decreasing=T)[1:designSize]
 }
