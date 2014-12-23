@@ -11,7 +11,7 @@ arma::vec initDesign(const arma::mat& X)
 
     // svd decomposition (dc -- divide and conquer is fastest and default)
     // use econ because we only need left side
-    // I believe econ also, be default gives nr by nc rather than nr by nr
+    // I believe econ also, by default, gives nr by nc rather than nr by nr
     arma::mat U, V;
     arma::vec S;
     arma::svd_econ(U, S, V, X, "left");
