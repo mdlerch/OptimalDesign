@@ -12,45 +12,60 @@ arma::ivec fedorovcpp(const arma::mat& xpxinv, const arma::mat& X,
     // NOTE: this allows multiple copies of the same design point
 
     int i = 0;
+    // index of X (complete candidate set) to insert
+    int in;
+    // index of X (complete candidate set) to remove
+    int out;
+    // index of current (to remove) out == current(out_c) - 1
+    int out_c;
+
+    // number of points in candidate set
+    int N = complete.n_rows;
+    // number of design points to use
+    int n = current.n_rows;
+
+    // swapping row vectors as 1 by C matrices
+    arma::mat row_in(1, X.n_cols), row_out(1, X.n_cols);
+
+    // Fedorov values as 1 by 1 matrices
+    arma::mat diim(1, 1), doom(1, 1), diom(1, 1);
+    // Fedorov values as doubles
+    double dii, doo, dio;
+
+    // Change in det( (X'X)^{-1})
+    double delta;
 
     while (i < iter)
     {
         // 1. Propose a index to put _in_ and an index to take _out_
-
-        // design point number
-        int in = 0;
-        // element number of current vector
-        int out = 0;
-        // design point number
-        int out_c = 0;
-
-        int N = complete.n_rows;
-        int n = current.n_rows;
-
-        // Exclude non swap
-        while (in == out_c)
+        // Don't pick two identical points
+        do
         {
             in = rand() % N;
-            out = rand() % n;
-            // Note current is indexed in R as starting with 1,
-            // but starting with 0 in C++
-            out_c = current(out) - 1;
+            out_c = rand() % n;
+            // Note current is a vector indices in R where index starts with 1
+            // To convert to C++ indexing, subtract 1.
+            out = current(out_c) - 1;
         }
+        while (in == out);
 
-        // 2. Get the 3 fedorov values based on the in and out
-        arma::mat row_in = X.row(in);
-        arma::mat row_out = X.row(out_c);
+        // 2. Get the 3 Fedorov values based on the in and out
+        // vectors to swap from design
+        row_in = X.row(in);
+        row_out = X.row(out);
 
-        arma::mat diim = row_in * xpxinv * row_in.t();
-        arma::mat doom = row_out * xpxinv * row_out.t();
-        arma::mat diom = row_in * xpxinv * row_out.t();
+        // Fedorov values as matrices
+        diim = row_in * xpxinv * row_in.t();
+        doom = row_out * xpxinv * row_out.t();
+        diom = row_in * xpxinv * row_out.t();
 
-        double dii = diim(0, 0);
-        double doo = doom(0, 0);
-        double dio = diom(0, 0);
+        // Fedorov values as double
+        dii = diim(0, 0);
+        doo = doom(0, 0);
+        dio = diom(0, 0);
 
         // 3. Calculate the change in det( (X'X)^{-1} )
-        double delta = ((1 + dii) * (1 - doo) + dio * dio - 1);
+        delta = ((1 + dii) * (1 - doo) + dio * dio - 1);
 
         // 4. If delta > 0, accept, else revert (ie do nothing)
         // TODO: do we need to verify that changes will produce an invertible
@@ -58,9 +73,10 @@ arma::ivec fedorovcpp(const arma::mat& xpxinv, const arma::mat& X,
 
         if (delta > 0)
         {
-            // in is index in c++ (begins at 0)
-            // add 1 to put in R indexing system
-            current(out) = in + 1;
+            // out_c is the index of current.  current(out_c) is an index of X
+            // that is being removed in favor of the new "in" index of X.
+            // However, "in" is 0 based (C++).  Add 1 for 1 based index (R).
+            current(out_c) = in + 1;
         }
 
         i++;
