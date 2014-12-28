@@ -1,29 +1,34 @@
-optimalDesign <- function(candidate, n, N = 100)
+optimalDesign <- function(formula, candidate, n, N = 100)
 {
 
-    initial <- initialDesign(candidate, n)
-    # initial <- initialDesignR(candidate, n)
+    # convert dataframe of design points to matrix of model points
+    candidateX <- model.matrix(formula, candidate)
 
-    M <- XtoM(DtoX(candidate[initial, ]))
+    # initial indices
+    initial <- initialDesign(candidateX, n)
+    # list of all indices
+    all <- 1:nrow(candidateX)
+    # initial <- initialDesignR(candidateX, n)
+
+    M <- XprimeX(candidateX[initial, ])
     M_inv <- solve(M)
-    all <- 1:nrow(candidate)
 
     current <- initial
 
     for (i in 1:N)
     {
-        prop <- proposition(current, candidate, all)
+        prop <- proposition(current, candidateX, all)
         if (moreEfficient(M_inv, prop$x, prop$y))
         {
-            if ( (attempt <- 
-                  tryToSwitch(current, prop$new, prop$old, candidate))$Y )
+            if ( (attempt <-
+                  tryToSwitch(current, prop$new, prop$old, candidateX))$Y )
             {
                 M_inv <- attempt$M_inv
                 current <- attempt$current
             }
         }
     }
-    candidate[current, ]
+    candidateX[current, ]
 }
 
 # {{{ Small functions
@@ -33,7 +38,7 @@ DtoX <- function(D)
     cbind(rep(1, nrow(D)), D[ , 1], D[ , 2])
 }
 
-XtoM <- function(X)
+XprimeX <- function(X)
 {
     t(X) %*% X
 }
@@ -49,23 +54,23 @@ moreEfficient <- function(M_inv, x, y)
     ((1 + dx) * (1 - dy) + dxy^2 - 1) > 0
 }
 
-proposition <- function(current, candidate, all)
+proposition <- function(current, candidateX, all)
 {
     old <- sample(current, 1)
     new <- sample(all[!(all %in% current)], 1)
 
-    x <- DtoX(rbind(candidate[new, ]))
-    y <- DtoX(rbind(candidate[old, ]))
+    x <- DtoX(rbind(candidateX[new, ]))
+    y <- DtoX(rbind(candidateX[old, ]))
 
     list(old = old, new = new, x = x, y = y)
 }
 
-tryToSwitch <- function(current, new, old, candidate)
+tryToSwitch <- function(current, new, old, candidateX)
 {
     current[current == old] <- new
 
-    D <- candidate[current, ]
-    M <- XtoM(DtoX(D))
+    D <- candidateX[current, ]
+    M <- XprimeX(DtoX(D))
 
     M_inv <- try(solve(M))
 
@@ -78,7 +83,7 @@ tryToSwitch <- function(current, new, old, candidate)
 }
 
 #
-# Returns the index of points in candidate set with the largest leverages. This prevents
+# Returns the index of points in candidateX set with the largest leverages. This prevents
 # singular initial designs for the fedorov algorithm
 #
 # The leverages (actually the square roots of leverages) are computed by taking the l2 norm 
@@ -86,10 +91,10 @@ tryToSwitch <- function(current, new, old, candidate)
 # candidate set matrix
 #
 
-initialDesignR <- function(candidate, designSize)
+initialDesignR <- function(candidateX, designSize)
 {
     l2norm <- function(v) norm(as.matrix(v), 'F')
-    leverages <- apply(svd(candidate)$u, 1, l2norm) # actually square roots of leverages
+    leverages <- apply(svd(candidateX)$u, 1, l2norm) # actually square roots of leverages
 
     order(leverages, decreasing=T)[1:designSize]
 }
