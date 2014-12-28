@@ -25,7 +25,7 @@ optimalDesign <- function(formula, candidate, n, N = 100)
             {
                 M_inv <- attempt$M_inv
                 current <- attempt$current
-            }
+           }
         }
     }
     candidateX[current, ]
@@ -69,8 +69,8 @@ tryToSwitch <- function(current, new, old, candidateX)
 {
     current[current == old] <- new
 
-    D <- candidateX[current, ]
-    M <- XprimeX(DtoX(D))
+    X <- candidateX[current, ]
+    M <- XprimeX(X)
 
     M_inv <- try(solve(M))
 
