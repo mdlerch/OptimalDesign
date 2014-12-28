@@ -1,77 +1,24 @@
-optimalDesign <- function(formula, candidate, n, N = 100)
+optimalDesign <- function(formula, candidate, n, iter = 100)
 {
 
     # convert dataframe of design points to matrix of model points
     candidateX <- model.matrix(formula, candidate)
 
     # initial indices
-    initial <- initialDesign(candidateX, n)
-    # list of all indices
-    all <- 1:nrow(candidateX)
+    current <- initialDesign(candidateX, n)
     # initial <- initialDesignR(candidateX, n)
 
-    M <- XprimeX(candidateX[initial, ])
+    M <- XprimeX(candidateX[current, ])
     M_inv <- solve(M)
 
-    current <- initial
+    current <- fedorovcpp(M_inv, candidateX, current, 1:nrow(candidate), iter)
 
-    for (i in 1:N)
-    {
-        prop <- proposition(current, candidateX, all)
-        if (moreEfficient(M_inv, prop$x, prop$y))
-        {
-            if ( (attempt <-
-                  tryToSwitch(current, prop$new, prop$old, candidateX))$Y )
-            {
-                M_inv <- attempt$M_inv
-                current <- attempt$current
-           }
-        }
-    }
-    candidateX[current, ]
+    candidate[current, ]
 }
-
 
 XprimeX <- function(X)
 {
     t(X) %*% X
-}
-
-moreEfficient <- function(M_inv, x, y)
-{
-    dxy <- x %*% M_inv %*% t(y)
-    dx  <- x %*% M_inv %*% t(x)
-    dy  <- y %*% M_inv %*% t(y)
-
-    ((1 + dx) * (1 - dy) + dxy^2 - 1) > 0
-}
-
-proposition <- function(current, candidateX, all)
-{
-    old <- sample(current, 1)
-    new <- sample(all[!(all %in% current)], 1)
-
-    x <- rbind(candidateX[new, ])
-    y <- rbind(candidateX[old, ])
-
-    list(old = old, new = new, x = x, y = y)
-}
-
-tryToSwitch <- function(current, new, old, candidateX)
-{
-    current[current == old] <- new
-
-    X <- candidateX[current, ]
-    M <- XprimeX(X)
-
-    M_inv <- try(solve(M))
-
-    if (class(M_inv) == "matrix")
-    {
-        return(list(current = current, M_inv = M_inv, Y = TRUE))
-    } else {
-        return(FALSE)
-    }
 }
 
 #
