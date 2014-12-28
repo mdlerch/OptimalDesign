@@ -31,19 +31,11 @@ optimalDesign <- function(formula, candidate, n, N = 100)
     candidateX[current, ]
 }
 
-# {{{ Small functions
-
-DtoX <- function(D)
-{
-    cbind(rep(1, nrow(D)), D[ , 1], D[ , 2])
-}
 
 XprimeX <- function(X)
 {
     t(X) %*% X
 }
-
-# }}} Small functions
 
 moreEfficient <- function(M_inv, x, y)
 {
@@ -59,8 +51,8 @@ proposition <- function(current, candidateX, all)
     old <- sample(current, 1)
     new <- sample(all[!(all %in% current)], 1)
 
-    x <- DtoX(rbind(candidateX[new, ]))
-    y <- DtoX(rbind(candidateX[old, ]))
+    x <- rbind(candidateX[new, ])
+    y <- rbind(candidateX[old, ])
 
     list(old = old, new = new, x = x, y = y)
 }
