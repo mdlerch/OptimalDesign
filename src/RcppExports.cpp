@@ -6,6 +6,23 @@
 
 using namespace Rcpp;
 
+// fedorovcpp
+arma::vec fedorovcpp(const arma::mat& xpx, IntegerVector current, IntegerVector complete);
+RcppExport SEXP OptimalDesign_fedorovcpp(SEXP xpxSEXP, SEXP currentSEXP, SEXP completeSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< const arma::mat& >::type xpx(xpxSEXP );
+        Rcpp::traits::input_parameter< IntegerVector >::type current(currentSEXP );
+        Rcpp::traits::input_parameter< IntegerVector >::type complete(completeSEXP );
+        arma::vec __result = fedorovcpp(xpx, current, complete);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
 // initDesign
 arma::vec initDesign(const arma::mat& X);
 RcppExport SEXP OptimalDesign_initDesign(SEXP XSEXP) {
