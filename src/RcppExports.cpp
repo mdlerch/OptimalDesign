@@ -7,18 +7,17 @@
 using namespace Rcpp;
 
 // fedorovcpp
-arma::ivec fedorovcpp(const arma::mat& xpxinv, const arma::mat& X, arma::ivec current, arma::ivec complete, int iter);
-RcppExport SEXP OptimalDesign_fedorovcpp(SEXP xpxinvSEXP, SEXP XSEXP, SEXP currentSEXP, SEXP completeSEXP, SEXP iterSEXP) {
+arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current, arma::ivec complete, int iter);
+RcppExport SEXP OptimalDesign_fedorovcpp(SEXP XcSEXP, SEXP currentSEXP, SEXP completeSEXP, SEXP iterSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< const arma::mat& >::type xpxinv(xpxinvSEXP );
-        Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP );
-        Rcpp::traits::input_parameter< arma::ivec >::type current(currentSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type Xc(XcSEXP );
+        Rcpp::traits::input_parameter< arma::uvec >::type current(currentSEXP );
         Rcpp::traits::input_parameter< arma::ivec >::type complete(completeSEXP );
         Rcpp::traits::input_parameter< int >::type iter(iterSEXP );
-        arma::ivec __result = fedorovcpp(xpxinv, X, current, complete, iter);
+        arma::uvec __result = fedorovcpp(Xc, current, complete, iter);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
