@@ -73,8 +73,7 @@ arma::ivec fedorovcpp(const arma::mat& xpxinv, const arma::mat& X,
         {
             // out_c is the index of current.  current(out_c) is an index of X
             // that is being removed in favor of the new "in" index of X.
-            // However, "in" is 0 based (C++).  Add 1 for 1 based index (R).
-            current(out_c) = in + 1;
+            current(out_c) = in;
         }
 
         i++;
