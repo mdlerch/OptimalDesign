@@ -26,14 +26,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // initDesign
-arma::vec initDesign(const arma::mat& X);
-RcppExport SEXP OptimalDesign_initDesign(SEXP XSEXP) {
+arma::uvec initDesign(const arma::mat& X, int design_size);
+RcppExport SEXP OptimalDesign_initDesign(SEXP XSEXP, SEXP design_sizeSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP );
-        arma::vec __result = initDesign(X);
+        Rcpp::traits::input_parameter< int >::type design_size(design_sizeSEXP );
+        arma::uvec __result = initDesign(X, design_size);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

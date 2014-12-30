@@ -5,7 +5,7 @@ fedorovcpp <- function(xpxinv, X, current, complete, iter) {
     .Call('OptimalDesign_fedorovcpp', PACKAGE = 'OptimalDesign', xpxinv, X, current, complete, iter)
 }
 
-initDesign <- function(X) {
-    .Call('OptimalDesign_initDesign', PACKAGE = 'OptimalDesign', X)
+initDesign <- function(X, design_size) {
+    .Call('OptimalDesign_initDesign', PACKAGE = 'OptimalDesign', X, design_size)
 }
 

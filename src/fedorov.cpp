@@ -43,9 +43,7 @@ arma::ivec fedorovcpp(const arma::mat& xpxinv, const arma::mat& X,
         {
             in = rand() % N;
             out_c = rand() % n;
-            // Note current is a vector indices in R where index starts with 1
-            // To convert to C++ indexing, subtract 1.
-            out = current(out_c) - 1;
+            out = current(out_c); // current now indexed from 0
         }
         while (in == out);
 
