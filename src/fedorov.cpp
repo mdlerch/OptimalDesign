@@ -6,15 +6,15 @@ using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-arma::ivec fedorovcpp(const arma::mat& xpxinv, const arma::mat& X,
-                         arma::ivec current, arma::ivec complete, int iter)
+arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
+                      arma::ivec complete, int iter)
 {
     // NOTE: this allows multiple copies of the same design point
 
     int i = 0;
-    // index of X (complete candidate set) to insert
+    // index of Xc (complete candidate set) to insert
     int in;
-    // index of X (complete candidate set) to remove
+    // index of Xc (complete candidate set) to remove
     int out;
     // index of current (to remove) out == current(out_c) - 1
     int out_c;
@@ -25,7 +25,7 @@ arma::ivec fedorovcpp(const arma::mat& xpxinv, const arma::mat& X,
     int n = current.n_rows;
 
     // swapping row vectors as 1 by C matrices
-    arma::mat row_in(1, X.n_cols), row_out(1, X.n_cols);
+    arma::mat row_in(1, Xc.n_cols), row_out(1, Xc.n_cols);
 
     // Fedorov values as 1 by 1 matrices
     arma::mat diim(1, 1), doom(1, 1), diom(1, 1);
@@ -34,6 +34,11 @@ arma::ivec fedorovcpp(const arma::mat& xpxinv, const arma::mat& X,
 
     // Change in det( (X'X)^{-1})
     double delta;
+
+    // Get (X'X)^{-1}
+    arma::mat xpxinv;
+    arma::mat X = Xc.rows(current);
+    arma::inv(xpxinv, X.t() * X);
 
     while (i < iter)
     {
@@ -49,8 +54,8 @@ arma::ivec fedorovcpp(const arma::mat& xpxinv, const arma::mat& X,
 
         // 2. Get the 3 Fedorov values based on the in and out
         // vectors to swap from design
-        row_in = X.row(in);
-        row_out = X.row(out);
+        row_in = Xc.row(in);
+        row_out = Xc.row(out);
 
         // Fedorov values as matrices
         diim = row_in * xpxinv * row_in.t();
@@ -71,9 +76,16 @@ arma::ivec fedorovcpp(const arma::mat& xpxinv, const arma::mat& X,
 
         if (delta > 0)
         {
-            // out_c is the index of current.  current(out_c) is an index of X
-            // that is being removed in favor of the new "in" index of X.
+            // out_c is the index of current.  current(out_c) is an index of Xc
+            // that is being removed in favor of the new "in" index of Xc.
             current(out_c) = in;
+
+            // if new design not invertible switch back
+            X = Xc.rows(current);
+            if (! arma::inv(xpxinv, X.t() * X))
+            {
+                current(out_c) = out;
+            }
         }
 
         i++;
