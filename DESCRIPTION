@@ -9,3 +9,4 @@ Description: Optimize experimental designs based on several criteria.
 License: MIT
 Imports: Rcpp (>= 0.11.2)
 LinkingTo: RcppArmadillo, Rcpp
+Suggests: testthat

@@ -1,4 +1,4 @@
-optimalDesign <- function(formula, candidate, n, criteria = "D", iter = 100)
+optimalDesign <- function(formula, candidate, n, criteria = "D", iter = 10000)
 {
 
     # convert dataframe of design points to matrix of model points
