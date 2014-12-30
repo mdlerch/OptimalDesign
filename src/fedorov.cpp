@@ -71,8 +71,6 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
         delta = ((1 + dii) * (1 - doo) + dio * dio - 1);
 
         // 4. If delta > 0, accept, else revert (ie do nothing)
-        // TODO: do we need to verify that changes will produce an invertible
-        // matrix?
 
         if (delta > 0)
         {
