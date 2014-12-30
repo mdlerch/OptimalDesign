@@ -1,4 +1,4 @@
-optimalDesign <- function(formula, candidate, n, criteria = "D", iter = 10000)
+optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000)
 {
 
     # convert dataframe of design points to matrix of model points
@@ -7,10 +7,10 @@ optimalDesign <- function(formula, candidate, n, criteria = "D", iter = 10000)
     # initial indices
     current <- initDesign(candidateX, n)
 
-    criteriums <- c("D", "A", "G", "IV")
-    criteria <- match.arg(criteria, criteriums)
+    criteria <- c("D", "A", "G", "IV")
+    criterion <- match.arg(criterion, criteria)
 
-    if (criteria == "D")
+    if (criterion == "D")
     {
         current <- fedorovcpp(candidateX, current, 1:nrow(candidate), iter)
     } else {
