@@ -8,7 +8,7 @@ getEff <- function(formula, design, candidate)
     X <- model.matrix(formula, design/max(candidate))
     p <- ncol(X)
     N <- nrow(X)
-	infoMat <- solve(t(X)%*%X)
+    infoMat <- solve(t(X)%*%X)
 	
     # evaluate efficiencies
     dEff <- 100 / (det(infoMat)^(1/p) * N)
