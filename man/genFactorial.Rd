@@ -1,4 +1,5 @@
 \name{genFactorial}
+\alias{genFactorial}
 \title{Generate a factorial design}
 \description{
     Generate a factorial design at arbitrary levels and variables
@@ -15,6 +16,6 @@
 \value{A data.frame with \code{n_factors} columns.}
 \author{Michael Lerch and John Sherrill}
 \examples{
-    \dontrun{genFactorial(3, 4)}
+    genFactorial(3, 4)
 }
 \keyword{design generation}

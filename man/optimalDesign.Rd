@@ -1,4 +1,5 @@
 \name{optimalDesign}
+\alias{optimalDesign}
 \title{Generate optimal designs}
 \description{
     Generate an optimal design from a candidate set of design points based on
@@ -25,6 +26,6 @@
 \references{Use \url{} or \href{}{} for web}
 \author{Michael Lerch and John Sherrill}
 \examples{
-    \dontrun{cand <- genFactorial(2, 4)}
-    \dontrun{optimalDesign(~ X1 + X2, cand, 4, "D")}
+    cand <- genFactorial(2, 4)
+    optimalDesign(~ X1 + X2, cand, 4, "D")
 }

@@ -1,4 +1,5 @@
 \name{genCCD}
+\alias{genCCD}
 \title{Generate a central composite design}
 \description{
     Generate a central composite design of arbitrary factors, with arbitrary
@@ -20,8 +21,8 @@
 \author{Michael Lerch and John Sherrill}
 \seealso{genFactorial}
 \examples{
-    \dontrun{genCCD(4)}
-    \dontrun{genCCD(4, 2)}
-    \dontrun{genCCD(4, 2, sqrt(2))}
+    genCCD(4)
+    genCCD(4, 2)
+    genCCD(4, 2, sqrt(2))
 }
 \keyword{design generation}
