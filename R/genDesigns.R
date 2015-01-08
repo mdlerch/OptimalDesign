@@ -11,19 +11,19 @@
 # user facing program (user doesn't need depth term)
 genFactorial <- function(n_levels, n_factors)
 {
+    genFact_recursive <- function(n_levels, n_factors, depth)
+    {
+        # center levels to zero and get scaling like in AlgDesign
+        levels <- scale(1:n_levels - n_levels/2 -.5, scale=(n_levels%%2/2+.5))
+        this <- rep(rep(levels, n_levels^(n_factors-depth)), rep(n_levels^(depth-1), n_levels^(n_factors-depth+1)))
+
+        if (depth > 1)
+            data.frame(unname(cbind(this, genFact_recursive(n_levels, n_factors, depth-1) )))
+        else
+            this
+    }
+
     genFact_recursive(n_levels, n_factors, n_factors)
-}
-
-genFact_recursive <- function(n_levels, n_factors, depth)
-{
-    # center levels to zero and get scaling like in AlgDesign
-    levels <- scale(1:n_levels - n_levels/2 -.5, scale=(n_levels%%2/2+.5))
-    this <- rep(rep(levels, n_levels^(n_factors-depth)), rep(n_levels^(depth-1), n_levels^(n_factors-depth+1)))
-
-    if (depth > 1)
-        data.frame(unname(cbind(this, genFact_recursive(n_levels, n_factors, depth-1) )))
-    else
-        this
 }
 
 # Non-recursive method?
@@ -70,6 +70,13 @@ genCCD <- function(n_factors, n_center, alpha)
     A <- as.matrix(genFactorial(2, n_factors))
     C <- matrix(0, nrow = n_center, ncol = n_factors)
 
+    CCDcol <- function(n_factors, col)
+    {
+        column <- rep(0, n_factors * 2)
+        column[2 * (col - 1) + c(1, 2)] <- c(1, -1)
+        column
+    }
+
     E <- CCDcol(n_factors, 1)
 
     if (n_factors > 1)
@@ -83,14 +90,6 @@ genCCD <- function(n_factors, n_center, alpha)
 
     as.data.frame(rbind(A, E, C))
 }
-
-CCDcol <- function(n_factors, col)
-{
-    column <- rep(0, n_factors * 2)
-    column[2 * (col - 1) + c(1, 2)] <- c(1, -1)
-    column
-}
-
 
 # genBBD <- function()
 # {
