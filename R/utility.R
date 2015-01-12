@@ -55,3 +55,46 @@ genCCD <- function()
 {
 
 }
+
+#
+# what to make a human readable spv equation. maybe a 'formula' too
+#
+# do we really need to run this sieve every time? and can it be quicker?
+# john didn't write this
+#
+sieve <- function(n)
+{
+    if(n > 1e8) stop("n too large")
+    primes <- rep(TRUE, n)
+    primes[1] <- FALSE
+    last.prime <- 2L
+    fsqr <- floor(sqrt(n))
+    while (last.prime <= fsqr)
+    {
+        primes[seq.int(2L*last.prime, n, last.prime)] <- FALSE
+        sel <- which(primes[(last.prime+1):(fsqr+1)])
+        if(any(sel)) last.prime <- last.prime + min(sel)
+        else last.prime <- fsqr+1
+    }
+    which(primes)
+}
+
+spvEquation <- function(formula, design)
+{
+    design <- model.matrix(formula, design)
+    infoMat <- solve(t(design)%*%design)
+
+    # would like sieve to return specified number of primes. not primes leq
+    primes <- c(1, sieve(100))[1:ncol(design)]
+    primey <- outer(primes, primes)
+    terms <- unique(c(primey))
+    coef <- cbind( rep(0, length(terms)), terms)
+
+    # an apply statement?
+    for(i in 1:length(terms)) coef[i,1] <- sum(infoMat*(primey == terms[i]))
+
+    # will later want to get terms right and all (like turn 4 into 2^2 to
+    # indicate x^2)
+    
+    return(coef)
+}
