@@ -2,58 +2,86 @@
 # Collection of small utility functions
 #
 
-getEff <- function(formula, design, candidate)
+getEff <- function(formula, design, evaluation, criteria = c("D", "A", "I", "G"))
 {
-    candidate <- model.matrix(formula, candidate/max(candidate))
-    X <- model.matrix(formula, design/max(candidate))
+    X <- model.matrix(formula, design)
     p <- ncol(X)
     N <- nrow(X)
-    infoMat <- solve(t(X)%*%X)
-	
+    infoMat <- t(X)%*%X
+
     # evaluate efficiencies
-    dEff <- 100 / (det(infoMat)^(1/p) * N)
-    aEff <- 100*p / (sum(diag(infoMat)) * N)
-
-    efficiencies <- list(dEff=dEff, aEff=aEff)
-	
-    # calculate iff candidate set provided
-    # I don't know about these to be honest
-    if(!missing(candidate))
+    D <- "D" %in% criteria
+    A <- "A" %in% criteria
+    I <- "I" %in% criteria
+    G <- "G" %in% criteria
+    if (D)
     {
-        spv <- apply(N * t(candidate) * (infoMat%*%t(candidate)), 2, sum)
-        gEff <- 100 * sqrt(p/N) / max(spv^.5)
-        iEff <- mean(spv^.5)
-
-        efficiencies <- c(efficiencies, list(gEff=gEff, iEff=iEff))
+        dEff <- 100 * det(infoMat)^(1/p) / N
     }
-    
+    if (A)
+    {
+        aEff <- 100*p / (sum(diag(M <- solve(infoMat))) * N)
+    }
+    if (I | G)
+    {
+        # calculate iff evaluation set provided
+        # I don't know about these to be honest
+        if(!missing(evaluation))
+        {
+            if (!exists("M"))
+            {
+                M <- solve(infoMat)
+            }
+
+            evaluation <- model.matrix(formula, evaluation)
+
+            # Var(x \beta ) = x Var(\beta) x' = \sigma x (X'X)^{-1} x'
+            # spv2 <- N * diag(evaluation %*% M %*% t(evaluation))
+            spv <- N * apply(evaluation %*% M * evaluation, 1, sum)
+
+            apply(N * t(candidate) * (infoMat%*%t(candidate)), 2, sum)
+            if (G)
+            {
+                gEff <- 100 * sqrt(p/N) / max(spv^.5)
+            }
+            if (I)
+            {
+                iEff <- mean(spv^.5)
+            }
+        }
+        else
+        {
+            warning("Must give evaluation set for I and G efficiencies")
+            if (I)
+            {
+                iEff <- NA
+            }
+            if (G)
+            {
+                gEff <- NA
+            }
+        }
+    }
+
+    efficiencies <- list()
+    if (D)
+    {
+        efficiencies$D <- dEff
+    }
+    if (A)
+    {
+        efficiencies$A <- aEff
+    }
+    if (I)
+    {
+        efficiencies$I <- iEff
+    }
+    if (G)
+    {
+        efficiencies$G <- gEff
+    }
+
     efficiencies
-}
-
-#
-# Generate factorial designs. It's recursive!
-#
-# rename these functions as you see fit (or the variables for that matter)
-#
-
-genFact <- function(n_levels, n_terms, i=n_terms)
-{
-    # center levels to zero and get scaling like in AlgDesign
-    levels <- scale(1:n_levels - n_levels/2 -.5, scale=(n_levels%%2/2+.5))
-    this <- rep(rep(levels ,n_levels^(n_terms-i)), rep(n_levels^(i-1), n_levels^(n_terms-i+1)))
-
-    if(i>1) data.frame(unname(cbind( this, genFact(n_levels,n_terms,i-1) )))
-    else this
-}
-
-genBBD <- function()
-{
-
-}
-
-genCCD <- function()
-{
-
 }
 
 #

@@ -1,2 +1,3 @@
 taghl_config.txt
-types_c.taghl
+types*.taghl
+.ycm_extra_conf.py

@@ -1,3 +1,6 @@
 useDynLib(OptimalDesign)
-exportPattern("^[[:alpha:]]+")
 importFrom(Rcpp, evalCpp)
+export(optimalDesign)
+export(genCCD)
+export(genFactorial)
+export(getEff)

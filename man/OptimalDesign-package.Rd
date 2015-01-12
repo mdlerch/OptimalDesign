@@ -3,38 +3,21 @@
 \alias{OptimalDesign}
 \docType{package}
 \title{
-What the package does (short line)
+Optimal experimental designs.
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+A suite of tools to evaluate and find optimal experimental designs.
 }
 \details{
 \tabular{ll}{
 Package: \tab OptimalDesign\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
+Version: \tab 0.0.1\cr
 Date: \tab 2014-12-19\cr
-License: \tab MIT \cr
+License: \tab BSD_3_clause \cr
 }
-~~ An overview of how to use the package, including the most important ~~
-~~ functions ~~
 }
 \author{
-Who wrote it
-
-Maintainer: Who to complain to <yourfault@somewhere.net>
+Michael Lerch, John Sherrill
 }
-\references{
-~~ Literature or other references for background information ~~
-}
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in ~~
-~~ the R documentation directory ~~
-\keyword{ package }
-\seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
-}
-\examples{
-%% ~~ simple examples of the most important functions ~~
-}
+\keyword{ package, experimental design }
