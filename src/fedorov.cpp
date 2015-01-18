@@ -6,7 +6,7 @@ using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
+arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current, int crit,
                       arma::ivec complete, int iter)
 {
     // NOTE: this allows multiple copies of the same design point
@@ -32,7 +32,11 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
     // Fedorov values as doubles
     double dii, doo, dio;
 
+    // Fedorov phi values
+    arma::mat phiii(1, 1), phioo(1, 1), phiio(1, 1);
+
     // Change in det( (X'X)^{-1})
+    double delta_d;
     double delta;
 
     // Get (X'X)^{-1}
@@ -68,11 +72,18 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
         dio = diom(0, 0);
 
         // 3. Calculate the change in det( (X'X)^{-1} )
-        delta = ((1 + dii) * (1 - doo) + dio * dio - 1);
+        delta_d = ((1 + dii) * (1 - doo) + dio * dio - 1);
 
-        // 4. If delta > 0, accept, else revert (ie do nothing)
+        if (crit == 1) // Criteria D
+        {
+            delta = delta_d;
+        }
+        else if (crit == 2) // Criteria A
+        {
+        }
 
-        if (delta > 0)
+        // 4. If delta_d > 0, accept, else revert (ie do nothing)
+        if (delta_d > 0)
         {
             // out_c is the index of current.  current(out_c) is an index of Xc
             // that is being removed in favor of the new "in" index of Xc.
