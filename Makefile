@@ -15,7 +15,7 @@ check: $(PKG_NAME)_$(PKG_VERS).tar.gz
 
 clean:
 	-rm $(PKG_NAME)_$(PKG_VERS).tar.gz
-	-rm $(PKG_NAME).Rcheck
+	-rm -rf $(PKG_NAME).Rcheck
 
 $(PKG_NAME)_$(PKG_VERS).tar.gz: DESCRIPTION
 	R CMD build ../OptimalDesign
