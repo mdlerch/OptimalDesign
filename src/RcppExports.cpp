@@ -7,8 +7,8 @@
 using namespace Rcpp;
 
 // fedorovcpp
-arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current, arma::ivec complete, int iter);
-RcppExport SEXP OptimalDesign_fedorovcpp(SEXP XcSEXP, SEXP currentSEXP, SEXP completeSEXP, SEXP iterSEXP) {
+arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current, arma::ivec complete, int crit, int iter);
+RcppExport SEXP OptimalDesign_fedorovcpp(SEXP XcSEXP, SEXP currentSEXP, SEXP completeSEXP, SEXP critSEXP, SEXP iterSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
@@ -16,8 +16,9 @@ BEGIN_RCPP
         Rcpp::traits::input_parameter< const arma::mat& >::type Xc(XcSEXP );
         Rcpp::traits::input_parameter< arma::uvec >::type current(currentSEXP );
         Rcpp::traits::input_parameter< arma::ivec >::type complete(completeSEXP );
+        Rcpp::traits::input_parameter< int >::type crit(critSEXP );
         Rcpp::traits::input_parameter< int >::type iter(iterSEXP );
-        arma::uvec __result = fedorovcpp(Xc, current, complete, iter);
+        arma::uvec __result = fedorovcpp(Xc, current, complete, crit, iter);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

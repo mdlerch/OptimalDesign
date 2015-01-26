@@ -6,8 +6,8 @@ using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current, int crit,
-                      arma::ivec complete, int iter)
+arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
+                      arma::ivec complete, int crit, int iter)
 {
     // NOTE: this allows multiple copies of the same design point
 
@@ -33,7 +33,7 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current, int crit,
     double dii, doo, dio;
 
     // Fedorov phi values
-    arma::mat phiii(1, 1), phioo(1, 1), phiio(1, 1);
+    arma::mat phiii(1, 1), phioo(1, 1), phiio(1, 1), phioi(1, 1);
 
     // Change in det( (X'X)^{-1})
     double delta_d;
@@ -80,6 +80,12 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current, int crit,
         }
         else if (crit == 2) // Criteria A
         {
+            phiii = row_in * xpxinv * xpxinv * row_in.t();
+            phiio = row_out * xpxinv * xpxinv * row_in.t();
+            phioi = row_in * xpxinv * xpxinv * row_out.t();
+            phioo = row_out * xpxinv * xpxinv * row_out.t();
+
+            delta =( (1 - dii) * phioo + dio * (phiio + phioi) - (1 + doo) * phiii ) / (1 + delta_d);
         }
 
         // 4. If delta_d > 0, accept, else revert (ie do nothing)

@@ -12,9 +12,14 @@ optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000)
 
     if (criterion == "D")
     {
-        current <- fedorovcpp(candidateX, current, 1:nrow(candidate), iter)
-    } else {
-        stop("Only D criteria currently supported")
+        current <- fedorovcpp(candidateX, current, 1:nrow(candidate), 1, iter)
+    }
+    else if (criterion == "A")
+    {
+        current <- fedorovcpp(candidateX, current, 1:nrow(candidate), 2, iter)
+    } else
+    {
+        stop("Only D and A criteria are currently supported")
     }
 
     # R indices start with 1
