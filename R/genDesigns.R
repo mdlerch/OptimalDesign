@@ -8,49 +8,26 @@
 ###########################################################################
 
 
-# user facing program (user doesn't need depth term)
-genFactorial <- function(n_levels, n_factors)
+# Non-recursive method
+#
+# This is so simple I think we should trash the recursive one
+# I thought it was cute but fuck it
+genFactorial <- function(n.levels, n.factors)
 {
-    genFact_recursive <- function(n_levels, n_factors, depth)
+    # construct levels
+    if (n.levels %% 2) # odd
     {
-        # center levels to zero and get scaling like in AlgDesign
-        levels <- scale(1:n_levels - n_levels/2 -.5, scale=(n_levels%%2/2+.5))
-        this <- rep(rep(levels, n_levels^(n_factors-depth)), rep(n_levels^(depth-1), n_levels^(n_factors-depth+1)))
-
-        if (depth > 1)
-            data.frame(unname(cbind(this, genFact_recursive(n_levels, n_factors, depth-1) )))
-        else
-            this
+        levels <- 1:n.levels - mean(1:n.levels)
+    }
+    else # even
+    {
+        levels <- (1:n.levels - mean(1:n.levels)) * 2
     }
 
-    genFact_recursive(n_levels, n_factors, n_factors)
+    repeatedLevels <- data.frame(replicate(n.factors,levels))
+
+    expand.grid(repeatedLevels)
 }
-
-# Non-recursive method?
-# genFactorial <- function(n_levels, n_factors)
-# {
-#     # get +/- end points
-#     if (n_levels %% 2) # odd
-#     {
-#         E <- (n_levels - 1) / 2
-#     }
-#     else # even
-#     {
-#         E <- n_levels - 1
-#     }
-#     # get factorial points
-#     X1 <- seq(-E, E, length.out = n_levels)
-#     i <- 1
-#     # repeat for number of variables
-#     while (i < n_factors)
-#     {
-#         X1 <- cbind(X1, X1)
-#         i <- i + 1
-#         colnames(X1)[i] <- paste0("X", i)
-#     }
-#     expand.grid(X1)
-# }
-
 
 ###########################################################################
 ##                       Central Composite Design                        ##
@@ -91,7 +68,34 @@ genCCD <- function(n_factors, n_center, alpha)
     as.data.frame(rbind(A, E, C))
 }
 
-# genBBD <- function()
+# I think we'll need this before we get to box-behnken:
+###########################################################################
+##                       Fractional-Factorial Design                     ##
+###########################################################################
+
+# genFFD <- function()
 # {
 # }
 
+###########################################################################
+##                       Bahcks-Baihynkin Design                         ##
+###########################################################################
+
+# t = number of variables per block
+# r = number of blocks in which a variable appears
+# lambda = number of times that each pair of variables appears in the same block
+# genBBD <- function(n.vars, n.blocks, t, r, lambda, n.centerPoints)
+# {
+# }
+
+###########################################################################
+##                       Plackett-Burman Design                          ##
+###########################################################################
+
+# I don't know how many designs we want to put in here.
+# There's an infobox at the bottom of the wiki page on some of these designs
+# that has a list of what I presume are important designs.
+
+# genPBD <- function()
+# {
+# {

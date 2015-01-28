@@ -85,10 +85,10 @@ getEff <- function(formula, design, evaluation, criteria = c("D", "A", "I", "G")
 }
 
 #
-# what to make a human readable spv equation. maybe a 'formula' too
+# want to make a human readable spv equation. maybe a 'formula' too
 #
 # do we really need to run this sieve every time? and can it be quicker?
-# john didn't write this
+# john didn't write this. he prob ripped it off stack exchange
 #
 sieve <- function(n)
 {
@@ -107,22 +107,95 @@ sieve <- function(n)
     which(primes)
 }
 
+#
+# Prime number decomposition function
+#
+
+primeDecomp <- function(x)
+{
+    div <- 2:x
+    factors <- div[x %% div == 0]
+    
+    primeNums = c()
+
+    # get the prime numbers you want
+    while(length(factors) > 1 & !factors[length(factors)]%%1)
+    {
+        nextPrime = min(factors[!factors%%1])
+        primeNums = c(primeNums, nextPrime)
+        factors = (factors/nextPrime)[-which(factors==nextPrime)]		
+    }
+
+    if(length(factors)==1 & !factors[length(factors)]%%1) primeNums = c(primeNums, factors)
+
+    # figure out those prime numbers' multiplicities
+    # primes in first row, multiplicities is second
+    as.data.frame(table(primeNums))
+}
+
+# This function calculates the SPV equation by a little trick keeping terms
+# straight. Basically there is a tiny computer algebra system that represents
+# variables and their products by prime numbers and their products
+# respectively. It's the fund. theorem of arithmetic in action.
+#
+# right now this assumes there's an intercept term in in the model
+
 spvEquation <- function(formula, design)
 {
-    design <- model.matrix(formula, design)
-    infoMat <- solve(t(design)%*%design)
+    # make model matrix and then info matirx
+    modelMat <- model.matrix(formula, design)
+    infoMat <- solve(t(modelMat) %*% modelMat)
 
     # would like sieve to return specified number of primes. not primes leq
-    primes <- c(1, sieve(100))[1:ncol(design)]
-    primey <- outer(primes, primes)
-    terms <- unique(c(primey))
+    # prime numbers represent variables
+    primes <- sieve(100)[1:ncol(design)]
+
+    # get products of prime numbers corresponding to products of variables
+    modelTerms = model.matrix(formula, data.frame(t(primes)))
+
+    # outerproduct of vector of prime number products
+    primeMat <- outer(as.numeric(modelTerms),as.numeric(modelTerms))
+
+    # terms in spv equation as represented by products of primes
+    terms <- unique(c(primeMat))
+
+    # for each prime number product, p, found in the terms vector, sum up 
+    # the elements in the info matrix that have indices equal to those in
+    # the outer product matrix that have the prime number product p
     coef <- cbind( rep(0, length(terms)), terms)
+    for(i in 1:length(terms)) coef[i,1] <- sum(infoMat*(primeMat == coef[i,2]))
 
-    # an apply statement?
-    for(i in 1:length(terms)) coef[i,1] <- sum(infoMat*(primey == terms[i]))
+    #########################################################
+    # Now to make the spv function human readable
+    #########################################################
 
-    # will later want to get terms right and all (like turn 4 into 2^2 to
-    # indicate x^2)
-    
-    return(coef)
+    # compute prime number decompositions for prime number products
+    coef.primed <- lapply(coef[,2], primeDecomp)
+
+    # create data.frame for primes and the variable names to be able to index
+    variable.names <- data.frame(primes, names(design))
+
+
+    # initialize string to print out SPV
+    spv.string <- as.character(coef[1])
+
+    # perhaps should treat intercept differently in some of these data
+    # structures since, in a way, it is a little different
+    #
+    # skips intercept term because added at initialization step above
+    for(i in setdiff(which(coef[,1] != 0), 1))
+  	{
+        spv.string <- paste(spv.string, "+", coef[i])
+
+        for(j in 1:nrow(coef.primed[[i]]))
+        {
+            prime <- coef.primed[[i]]$primeNums[j]
+            mult <- coef.primed[[i]]$Freq[j]
+            single.prime.string <- paste(variable.names[variable.names[,1]==prime, 2], "^", mult, sep="")
+
+            spv.string <- paste(spv.string, "*", single.prime.string, sep="")
+        }
+    }
+
+    spv.string
 }
