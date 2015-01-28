@@ -17,7 +17,7 @@ clean:
 	-rm $(PKG_NAME)_$(PKG_VERS).tar.gz
 	-rm -rf $(PKG_NAME).Rcheck
 
-$(PKG_NAME)_$(PKG_VERS).tar.gz: DESCRIPTION
+$(PKG_NAME)_$(PKG_VERS).tar.gz:
 	Rscript -e "Rcpp::compileAttributes()"
 	R CMD build ../OptimalDesign
 
