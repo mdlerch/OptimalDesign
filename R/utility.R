@@ -37,9 +37,9 @@ getEff <- function(formula, design, evaluation, criteria = c("D", "A", "I", "G")
 
             # Var(x \beta ) = x Var(\beta) x' = \sigma x (X'X)^{-1} x'
             # spv2 <- N * diag(evaluation %*% M %*% t(evaluation))
+            # apply(N * t(evaluation) * (infoMat %*% t(evaluation)), 2, sum)
             spv <- N * apply(evaluation %*% M * evaluation, 1, sum)
 
-            apply(N * t(candidate) * (infoMat%*%t(candidate)), 2, sum)
             if (G)
             {
                 gEff <- 100 * sqrt(p/N) / max(spv^.5)
