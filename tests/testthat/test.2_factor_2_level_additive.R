@@ -26,10 +26,10 @@ get_nums <- function(mat, matcher)
 
 test_that("2^2 small grid", {
               expect_equal(get_nums(Xsmall, X2squared),
-                           sort(as.numeric(rownames(optimalDesign(~x+y, Xsmall, 4, criteria = "D")))))
+                           sort(as.numeric(rownames(optimalDesign(~x+y, Xsmall, 4, criterion = "D")))))
 })
 
 test_that("2^2 large grid", {
               expect_equal(get_nums(Xlarge, X2squared),
-                           sort(as.numeric(rownames( optimalDesign(~x+y, Xlarge, 4, criteria = "D")))))
+                           sort(as.numeric(rownames( optimalDesign(~x+y, Xlarge, 4, criterion = "D")))))
 })
