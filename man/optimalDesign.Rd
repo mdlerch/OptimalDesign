@@ -18,8 +18,8 @@
         maximization routine.}
 }
 \details{
-    For the "D" criterion, the Fedorov algorithm is used to find an optimal
-    design.  The "A", "G", and "I" criteria are not supported yet.
+    For the "D" and "A" criterion, the Fedorov algorithm is used to find an optimal
+    design.  The "G", and "I" criteria are not supported yet.
 }
 \value{A data.frame.  A subset of \code{candidate} of length \code{n}.  Points
     may be repeated.}
