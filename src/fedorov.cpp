@@ -32,8 +32,10 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
     // Fedorov values as doubles
     double dii, doo, dio;
 
-    // Fedorov phi values
-    arma::mat phiii(1, 1), phioo(1, 1), phiio(1, 1), phioi(1, 1);
+    // Fedorov phi values as 1 by 1 matrices
+    arma::mat phiiim(1, 1), phioom(1, 1), phiiom(1, 1), phioim(1, 1);
+    // Fedorov phi values as doubles
+    double phiii, phioo, phiio, phioi;
 
     // Change in det( (X'X)^{-1})
     double delta_d;
@@ -80,12 +82,18 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
         }
         else if (crit == 2) // Criteria A
         {
-            phiii = row_in * xpxinv * xpxinv * row_in.t();
-            phiio = row_out * xpxinv * xpxinv * row_in.t();
-            phioi = row_in * xpxinv * xpxinv * row_out.t();
-            phioo = row_out * xpxinv * xpxinv * row_out.t();
+            phiiim = row_in * xpxinv * xpxinv * row_in.t();
+            phiiom = row_out * xpxinv * xpxinv * row_in.t();
+            phioim = row_in * xpxinv * xpxinv * row_out.t();
+            phioom = row_out * xpxinv * xpxinv * row_out.t();
 
-            delta =( (1 - dii) * phioo + dio * (phiio + phioi) - (1 + doo) * phiii ) / (1 + delta_d);
+            // convert phi values to double
+            phiii = phiiim(0, 0);
+            phiio = phiiom(0, 0);
+            phioi = phioim(0, 0);
+            phioo = phioom(0, 0);
+
+            delta = ( (1 - dii) * phioo + dio * (phiio + phioi) - (1 + doo) * phiii ) / (1 + delta_d);
         }
 
         // 4. If delta_d > 0, accept, else revert (ie do nothing)
