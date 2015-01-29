@@ -1,6 +1,3 @@
 useDynLib(OptimalDesign)
 importFrom(Rcpp, evalCpp)
-export(optimalDesign)
-export(genCCD)
-export(genFactorial)
-export(getEff)
+exportPattern(".")
