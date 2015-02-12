@@ -87,10 +87,10 @@ genCCD <- function(n_factors, n_center, alpha)
 #
 # By definition n.factors must be greater than 2
 # probably should have a restriction on n.blocks given n.factors
-genBBD <- function(n.factors, n.blocks, n.centerPoints, t=2, r, lambda)
-{
-    
-}
+#genBBD <- function(n.factors, n.blocks, n.centerPoints, t=2, r, lambda)
+#{
+#    
+#}
 
 ###########################################################################
 ##                       Plackett-Burman Design                          ##
