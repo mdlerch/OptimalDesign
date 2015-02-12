@@ -81,12 +81,16 @@ genCCD <- function(n_factors, n_center, alpha)
 ##                       Bahcks-Baihynkin Design                         ##
 ###########################################################################
 
-# t = number of variables per block
-# r = number of blocks in which a variable appears
-# lambda = number of times that each pair of variables appears in the same block
-# genBBD <- function(n.vars, n.blocks, t, r, lambda, n.centerPoints)
-# {
-# }
+# t = number of factors per block
+# r = number of blocks in which a factor appears
+# lambda = number of times that each pair of factors appear in the same block
+#
+# By definition n.factors must be greater than 2
+# probably should have a restriction on n.blocks given n.factors
+genBBD <- function(n.factors, n.blocks, n.centerPoints, t=2, r, lambda)
+{
+    
+}
 
 ###########################################################################
 ##                       Plackett-Burman Design                          ##
