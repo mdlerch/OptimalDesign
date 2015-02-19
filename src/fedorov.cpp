@@ -102,21 +102,6 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
         }
         while (in == out or old_prop);
 
-        std::cout << "Current: ";
-        for (j=0; j<current.n_rows; ++j)
-        {
-            std::cout << current(j) << " ";
-        }
-        std::cout << std::endl;
-        std::cout << "Candidates: ";
-        for (j=0; j<candidateidx.n_rows; ++j)
-        {
-            std::cout << candidateidx(j) << " ";
-        }
-        std::cout << std::endl;
-        std::cout << "In: " << in << std::endl;
-        std::cout << "Out: " << out << std::endl;
-
         // 2. Get the 3 Fedorov values based on the in and out
         // vectors to swap from design
         row_in = Xc.row(in);
@@ -196,7 +181,6 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
             {
                 candidateidx(in_c) = out;
             }
-
 
             // if new design not invertible, switch back
             if (! arma::inv(xpxinv, X.t() * X))

@@ -16,6 +16,7 @@ optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
     criteria <- c("D", "A", "G", "IV")
     criterion <- match.arg(criterion, criteria)
 
+    # initial set of legal swaps depends on repeated option
     if (repeated)
     {
         candidateidx <- (0:(nrow(candidate) - 1))
