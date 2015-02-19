@@ -10,6 +10,11 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
                       arma::ivec complete, int crit, int iter)
 {
     // NOTE: this allows multiple copies of the same design point
+    // do we need the complete ivec as an argument? instead of complete.n_rows
+    // on line 26 below, we could Xc.n_rows
+    //
+    // even if we can't get n_rows from Xc cause it's got the & address thing
+    // or it's a constant, we could just pass a numeric instead of complete
 
     int i = 0;
     // index of Xc (complete candidate set) to insert
@@ -45,6 +50,39 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
     arma::mat xpxinv;
     arma::mat X = Xc.rows(current);
     arma::inv(xpxinv, X.t() * X);
+
+    /**** SVD matrices for g-criterion ****/
+    // objects for SVD of candidate set
+    arma::mat U_can;
+    arma::mat V_can;
+    arma::mat D_can;
+    arma::vec s_can;
+    arma::svd_econ(U_can, s_can, V_can, Xc, "left");
+
+    // objects for SVD of current design
+    arma::mat U;
+    arma::mat V;
+    arma::vec s;
+    arma::svd_econ(U, s, V, X, "right");
+    s = 1/s;
+    arma::mat Dinv = arma::diagmat(s);
+
+    // special formula for calculating g-criterion for current design
+    arma::mat svd_thing = U_can * V * Dinv;
+    svd_thing = svd_thing % svd_thing;
+    arma::vec leverages = arma::sum(svd_thing, 1);
+    double g_crit = leverages.max();
+
+    // objects for SVD of design with potential new point
+    arma::uvec current_test;
+    arma::mat X_test;
+    arma::mat U_test;
+    arma::mat V_test;
+    arma::vec s_test;
+    arma::mat Dinv_test;
+    arma::mat svd_thing_test;
+    arma::vec leverages_test;
+    double g_crit_test;
 
     while (i < iter)
     {
@@ -95,19 +133,48 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
 
             delta = ( (1 - dii) * phioo + dio * (phiio + phioi) - (1 + doo) * phiii ) / (1 + delta_d);
         }
-
-        // 4. If delta_d > 0, accept, else revert (ie do nothing)
-        if (delta_d > 0)
+        else if (crit == 3) // Criteria G
         {
+            // calculate SVD for potential new design
+            current_test = current;
+            current_test(out_c) = in;
+            X_test = Xc.rows(current_test);
+            arma::svd_econ(U_test, s_test, V_test, X_test, "right");
+            s_test = 1/s_test;
+            Dinv_test = arma::diagmat(s_test);
+
+            // special formula for g-criterion for potential new design
+            svd_thing_test = U_can * V_test * Dinv_test;
+            svd_thing_test = svd_thing_test % svd_thing_test;
+            leverages_test = arma::sum(svd_thing_test, 1);
+            g_crit_test = leverages_test.max();
+            
+            // if test g-criterion higher, delta > 0 indicates success
+            delta = g_crit_test - g_crit;
+        }
+
+        // 4. If delta > 0, accept, else revert (ie do nothing)
+        if (delta > 0)
+        {   
             // out_c is the index of current.  current(out_c) is an index of Xc
             // that is being removed in favor of the new "in" index of Xc.
             current(out_c) = in;
-
-            // if new design not invertible switch back
             X = Xc.rows(current);
+
+            if (crit == 3)
+            {
+                g_crit = g_crit_test;
+            }
+
+            // if new design not invertible, switch back
             if (! arma::inv(xpxinv, X.t() * X))
             {
                 current(out_c) = out;
+
+                if (crit == 3)
+                {
+                    g_crit = g_crit - delta;
+                }
             }
         }
 
