@@ -1,26 +1,48 @@
-optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000)
+optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
+                          repeated = TRUE)
 {
+
+    if (repeated == FALSE && n > nrow(candidate))
+    {
+        stop("Requested design larger than candidate set and repeated trials not set")
+    }
 
     # convert dataframe of design points to matrix of model points
     candidateX <- model.matrix(formula, candidate)
 
     # initial indices
-    current <- initDesign(candidateX, n)
+    current <- initDesign(candidateX, n, repeated)
 
     criteria <- c("D", "A", "G", "IV")
     criterion <- match.arg(criterion, criteria)
 
+    if (repeated)
+    {
+        candidateidx <- (0:(nrow(candidate) - 1))
+    }
+    else
+    {
+        candidateidx <- NULL
+        for (i in 0:(nrow(candidate) - 1))
+        {
+            if (!(i %in% current))
+            {
+                candidateidx <- c(candidateidx, i)
+            }
+        }
+    }
+
     if (criterion == "D")
     {
-        current <- fedorovcpp(candidateX, current, 1:nrow(candidate), 1, iter)
+        current <- fedorovcpp(candidateX, current, candidateidx, 1, iter, repeated)
     }
     else if (criterion == "A")
     {
-        current <- fedorovcpp(candidateX, current, 1:nrow(candidate), 2, iter)
+        current <- fedorovcpp(candidateX, current, candidateidx, 2, iter, repeated)
     }
     else if (criterion == "G")
     {
-        current <- fedorovcpp(candidateX, current, 1:nrow(candidate), 3, iter)
+        current <- fedorovcpp(candidateX, current, candidateidx, 3, iter, repeated)
     }
     else
     {

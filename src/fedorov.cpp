@@ -7,25 +7,30 @@ using namespace Rcpp;
 
 // [[Rcpp::export]]
 arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
-                      arma::ivec complete, int crit, int iter)
+                      arma::uvec candidateidx, int crit, int iter,
+                      bool repeated)
 {
-    // NOTE: this allows multiple copies of the same design point
-    // do we need the complete ivec as an argument? instead of complete.n_rows
-    // on line 26 below, we could Xc.n_rows
-    //
-    // even if we can't get n_rows from Xc cause it's got the & address thing
-    // or it's a constant, we could just pass a numeric instead of complete
+    // current is a vector of indexes in R's start at 1 style
+    // candidateidx is a vector of indexes that are legal propositions
+    // crit is the criteria of interest (1=D, 2=A)
 
     int i = 0;
+
+    int j;
+
+    // index of candidateidx (legal set of indices) to insert
+    int in_c;
     // index of Xc (complete candidate set) to insert
     int in;
     // index of Xc (complete candidate set) to remove
     int out;
     // index of current (to remove) out == current(out_c) - 1
     int out_c;
+    // flag to make new proposition if proposed is already being used
+    int old_prop;
 
     // number of points in candidate set
-    int N = complete.n_rows;
+    int N = candidateidx.n_rows;
     // number of design points to use
     int n = current.n_rows;
 
@@ -86,15 +91,31 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
 
     while (i < iter)
     {
-        // 1. Propose a index to put _in_ and an index to take _out_
+        // 1. Propose an index to put _in_ and an index to take _out_
         // Don't pick two identical points
         do
         {
-            in = rand() % N;
+            in_c = rand() % N;
+            in = candidateidx(in_c);
             out_c = rand() % n;
-            out = current(out_c); // current now indexed from 0
+            out = current(out_c);
         }
-        while (in == out);
+        while (in == out or old_prop);
+
+        std::cout << "Current: ";
+        for (j=0; j<current.n_rows; ++j)
+        {
+            std::cout << current(j) << " ";
+        }
+        std::cout << std::endl;
+        std::cout << "Candidates: ";
+        for (j=0; j<candidateidx.n_rows; ++j)
+        {
+            std::cout << candidateidx(j) << " ";
+        }
+        std::cout << std::endl;
+        std::cout << "In: " << in << std::endl;
+        std::cout << "Out: " << out << std::endl;
 
         // 2. Get the 3 Fedorov values based on the in and out
         // vectors to swap from design
@@ -148,28 +169,43 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
             svd_thing_test = svd_thing_test % svd_thing_test;
             leverages_test = arma::sum(svd_thing_test, 1);
             g_crit_test = leverages_test.max();
-            
+
             // if test g-criterion higher, delta > 0 indicates success
             delta = g_crit_test - g_crit;
         }
 
         // 4. If delta > 0, accept, else revert (ie do nothing)
         if (delta > 0)
-        {   
+        {
             // out_c is the index of current.  current(out_c) is an index of Xc
             // that is being removed in favor of the new "in" index of Xc.
             current(out_c) = in;
+
             X = Xc.rows(current);
+
 
             if (crit == 3)
             {
                 g_crit = g_crit_test;
             }
 
+            // if not allowing repeated, update the legal candidates
+            // this should be just swapping the one I am putting in with
+            // the one I just pulled out
+            if (!repeated)
+            {
+                candidateidx(in_c) = out;
+            }
+
+
             // if new design not invertible, switch back
             if (! arma::inv(xpxinv, X.t() * X))
             {
                 current(out_c) = out;
+                if (!repeated)
+                {
+                    candidateidx(in_c) = in;
+                }
 
                 if (crit == 3)
                 {

@@ -5,7 +5,8 @@
     Generate an optimal design from a candidate set of design points based on
     one of several design criteria.
 }
-\usage{optimalDesign(formula, candidate, n, criterion = "D", iter = 10000)}
+\usage{optimalDesign(formula, candidate, n, criterion = "D", iter = 10000,
+                     repeated = FALSE)}
 \arguments{
     \item{formula}{an object of class 'formula'.  The model to be fitted based
         on the experiment.}
@@ -16,6 +17,8 @@
         "G", or "I".}
     \item{iter}{an integer.  The number of iterations to use in the
         maximization routine.}
+    \item{repeated}{boolean.  If TRUE allow each candidate point to potentially
+        repeated.  If FALSE, use each candidate point at most once}
 }
 \details{
     For the "D" and "A" criterion, the Fedorov algorithm is used to find an optimal
