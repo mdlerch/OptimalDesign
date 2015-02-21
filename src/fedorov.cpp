@@ -25,7 +25,7 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
     int out_c;
 
     // number of points in candidate set
-    int N = complete.n_rows;
+    int N = Xc.n_rows;
     // number of design points to use
     int n = current.n_rows;
 
@@ -149,8 +149,8 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
             leverages_test = arma::sum(svd_thing_test, 1);
             g_crit_test = leverages_test.max();
             
-            // if test g-criterion higher, delta > 0 indicates success
-            delta = g_crit_test - g_crit;
+            // if test g-criterion lower, delta > 0 indicates success
+            delta = g_crit - g_crit_test;
         }
 
         // 4. If delta > 0, accept, else revert (ie do nothing)
