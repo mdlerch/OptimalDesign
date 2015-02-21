@@ -85,26 +85,20 @@ getEff <- function(formula, design, evaluation, criteria = c("D", "A", "I", "G")
 }
 
 #
-# want to make a human readable spv equation. maybe a 'formula' too
+# prime number generator
 #
-# do we really need to run this sieve every time? and can it be quicker?
-# john didn't write this. he prob ripped it off stack exchange
-#
-sieve <- function(n)
+primeGen <- function(n)
 {
-    if(n > 1e8) stop("n too large")
-    primes <- rep(TRUE, n)
-    primes[1] <- FALSE
-    last.prime <- 2L
-    fsqr <- floor(sqrt(n))
-    while (last.prime <= fsqr)
+    primes = c(2)
+    i = 3
+
+    while(length(primes) < n)
     {
-        primes[seq.int(2L*last.prime, n, last.prime)] <- FALSE
-        sel <- which(primes[(last.prime+1):(fsqr+1)])
-        if(any(sel)) last.prime <- last.prime + min(sel)
-        else last.prime <- fsqr+1
+        if(sum(i%%primes == 0) == 0) primes = c(primes, i)
+        i=i+1
     }
-    which(primes)
+    
+    primes
 }
 
 #
@@ -134,24 +128,28 @@ primeDecomp <- function(x)
 }
 
 # This function calculates the SPV equation by a little trick keeping terms
-# straight. Basically there is a tiny computer algebra system that represents
-# variables and their products by prime numbers and their products
-# respectively. It's the fund. theorem of arithmetic in action.
+# organized. Basically there is a tiny computer algebra system that represents
+# variables and their products by products of prime numbers. It's the
+# fund. theorem of arithmetic in action.
 #
 # right now this assumes there's an intercept term in in the model
 
 spvEquation <- function(formula, design)
 {
+    # size of design
+    N <- nrow(design)
+    
     # make model matrix and then info matirx
     modelMat <- model.matrix(formula, design)
     infoMat <- solve(t(modelMat) %*% modelMat)
 
-    # would like sieve to return specified number of primes. not primes leq
-    # prime numbers represent variables
-    primes <- sieve(100)[1:ncol(design)]
-
+    # obtain prime numbers to  represent variables
+    primes <- primeGen(ncol(design))
+    primes <- data.frame(t(primes))
+    names(primes) <- names(design)
+    
     # get products of prime numbers corresponding to products of variables
-    modelTerms = model.matrix(formula, data.frame(t(primes)))
+    modelTerms = model.matrix(formula, primes)
 
     # outerproduct of vector of prime number products
     primeMat <- outer(as.numeric(modelTerms),as.numeric(modelTerms))
@@ -165,6 +163,9 @@ spvEquation <- function(formula, design)
     coef <- cbind( rep(0, length(terms)), terms)
     for(i in 1:length(terms)) coef[i,1] <- sum(infoMat*(primeMat == coef[i,2]))
 
+    # multiply these coefficients by the size of the design, N, to get Scaled PV
+    coef[,1] = N*coef[,1]
+
     #########################################################
     # Now to make the spv function human readable
     #########################################################
@@ -174,7 +175,6 @@ spvEquation <- function(formula, design)
 
     # create data.frame for primes and the variable names to be able to index
     variable.names <- data.frame(primes, names(design))
-
 
     # initialize string to print out SPV
     spv.string <- as.character(coef[1])

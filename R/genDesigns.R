@@ -7,11 +7,6 @@
 ##                           FACTORIAL DESIGN                            ##
 ###########################################################################
 
-
-# Non-recursive method
-#
-# This is so simple I think we should trash the recursive one
-# I thought it was cute but fuck it
 genFactorial <- function(n.levels, n.factors)
 {
     # construct levels

@@ -21,8 +21,8 @@
         repeated.  If FALSE, use each candidate point at most once}
 }
 \details{
-    For the "D" and "A" criterion, the Fedorov algorithm is used to find an optimal
-    design.  The "G", and "I" criteria are not supported yet.
+    For the "D", "A", and "G", criterion, the Fedorov algorithm is used to find an optimal
+    design.  The "I" criterion is not supported yet.
 }
 \value{A data.frame.  A subset of \code{candidate} of length \code{n}.  Points
     may be repeated.}
