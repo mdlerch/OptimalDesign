@@ -1,8 +1,8 @@
 Package: OptimalDesign
 Type: Package
 Title: Optimize experimental designs based on several design criteria.
-Version: 0.0.1
-Date: 2014-12-21
+Version: 0.2.0
+Date: 2015-2-19
 Author: Michael Lerch, John Sherrill
 Maintainer: Michael Lerch <mdlerch@gmail.com>
 Description: Optimize experimental designs based on several criteria.

@@ -7,18 +7,19 @@
 using namespace Rcpp;
 
 // fedorovcpp
-arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current, arma::ivec complete, int crit, int iter);
-RcppExport SEXP OptimalDesign_fedorovcpp(SEXP XcSEXP, SEXP currentSEXP, SEXP completeSEXP, SEXP critSEXP, SEXP iterSEXP) {
+arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current, arma::uvec candidateidx, int crit, int iter, bool repeated);
+RcppExport SEXP OptimalDesign_fedorovcpp(SEXP XcSEXP, SEXP currentSEXP, SEXP candidateidxSEXP, SEXP critSEXP, SEXP iterSEXP, SEXP repeatedSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< const arma::mat& >::type Xc(XcSEXP );
         Rcpp::traits::input_parameter< arma::uvec >::type current(currentSEXP );
-        Rcpp::traits::input_parameter< arma::ivec >::type complete(completeSEXP );
+        Rcpp::traits::input_parameter< arma::uvec >::type candidateidx(candidateidxSEXP );
         Rcpp::traits::input_parameter< int >::type crit(critSEXP );
         Rcpp::traits::input_parameter< int >::type iter(iterSEXP );
-        arma::uvec __result = fedorovcpp(Xc, current, complete, crit, iter);
+        Rcpp::traits::input_parameter< bool >::type repeated(repeatedSEXP );
+        arma::uvec __result = fedorovcpp(Xc, current, candidateidx, crit, iter, repeated);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
@@ -26,15 +27,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // initDesign
-arma::uvec initDesign(const arma::mat& X, int design_size);
-RcppExport SEXP OptimalDesign_initDesign(SEXP XSEXP, SEXP design_sizeSEXP) {
+arma::uvec initDesign(const arma::mat& X, int design_size, int repeated);
+RcppExport SEXP OptimalDesign_initDesign(SEXP XSEXP, SEXP design_sizeSEXP, SEXP repeatedSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP );
         Rcpp::traits::input_parameter< int >::type design_size(design_sizeSEXP );
-        arma::uvec __result = initDesign(X, design_size);
+        Rcpp::traits::input_parameter< int >::type repeated(repeatedSEXP );
+        arma::uvec __result = initDesign(X, design_size, repeated);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
