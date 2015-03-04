@@ -6,14 +6,14 @@ using namespace Rcpp;
 
 
 
-int geneticblend(arma::mat &, uint, arma::mat, arma::uvec, double);
-int geneticcreep(arma::mat &, uint, double size, double);
-int geneticmutat(arma::mat &, uint, double);
+int grblend(arma::mat &, uint, arma::mat, arma::uvec, double);
+int grcreep(arma::mat &, uint, double size, double);
+int grmutat(arma::mat &, uint, double);
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-arma::mat geneticcpp(arma::mat parents, int n, int iterations, arma::uvec pidx)
+arma::mat geneticrealcpp(arma::mat parents, int n, int iterations, arma::uvec pidx)
 {
     // parents is a matrix with each row being a vector of the design points
     //  with the first n being the first variable, the second n being the second
@@ -34,22 +34,21 @@ arma::mat geneticcpp(arma::mat parents, int n, int iterations, arma::uvec pidx)
     for (iter=0; iter<M; ++iter)
     {
         second_parent = RcppArmadillo::sample(pidx, M, false);
-    }
 
-    children = parents;
+        children = parents;
 
-    for (child=0; child<M; ++child)
-    {
-        geneticblend(children, child, parents, second_parent, 0);
-        geneticcreep(children, child, .3, 0);
-        geneticmutat(children, child, .5);
+        for (child=0; child<M; ++child)
+        {
+            grblend(children, child, parents, second_parent, 0);
+            grcreep(children, child, .3, 0);
+            grmutat(children, child, .5);
+        }
     }
 
     return children;
-
 }
 
-int geneticblend(arma::mat & children, uint child, arma::mat parents, arma::uvec parent2, double alpha)
+int grblend(arma::mat & children, uint child, arma::mat parents, arma::uvec parent2, double alpha)
 {
     int i;
 
@@ -63,7 +62,7 @@ int geneticblend(arma::mat & children, uint child, arma::mat parents, arma::uvec
     return 0;
 }
 
-int geneticcreep(arma::mat & children, uint child, double size, double alpha)
+int grcreep(arma::mat & children, uint child, double size, double alpha)
 {
     int i;
 
@@ -84,7 +83,7 @@ int geneticcreep(arma::mat & children, uint child, double size, double alpha)
     }
 }
 
-int geneticmutat(arma::mat & children, uint child, double alpha)
+int grmutat(arma::mat & children, uint child, double alpha)
 {
     int i;
 
