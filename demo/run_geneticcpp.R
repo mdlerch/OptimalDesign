@@ -1,7 +1,6 @@
 library(RcppArmadillo)
 
-
-Rcpp::sourceCpp("../src/genetic.cpp")
+Rcpp::sourceCpp("./src/genetic.cpp")
 
 M <- 10
 n <- 4
@@ -12,3 +11,5 @@ for (i in 1:M)
 }
 
 children <- geneticcpp(parents, n, 1, (1:M) - 1)
+
+cbind(children[ , 1], parents[ , 1])
