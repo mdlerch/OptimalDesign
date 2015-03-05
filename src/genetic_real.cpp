@@ -6,9 +6,10 @@ using namespace Rcpp;
 
 
 
-int grblend(arma::mat &, uint, arma::mat, arma::uvec, double);
-int grcreep(arma::mat &, uint, double size, double);
-int grmutat(arma::mat &, uint, double);
+arma::ivec primedecomp(int);
+void grblend(arma::mat &, uint, arma::mat, arma::uvec, double);
+void grcreep(arma::mat &, uint, double size, double);
+void grmutat(arma::mat &, uint, double);
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
@@ -44,15 +45,12 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uve
             grmutat(children, child, .5);
         }
 
-    // start by hardcoding a linear model ~X1 + X2
-
-
     }
 
     return children;
 }
 
-int grblend(arma::mat & children, uint child, arma::mat parents, arma::uvec parent2, double alpha)
+void grblend(arma::mat & children, uint child, arma::mat parents, arma::uvec parent2, double alpha)
 {
     int i;
 
@@ -63,10 +61,9 @@ int grblend(arma::mat & children, uint child, arma::mat parents, arma::uvec pare
             children(i, child) = parents(i, parent2[i]);
         }
     }
-    return 0;
 }
 
-int grcreep(arma::mat & children, uint child, double size, double alpha)
+void grcreep(arma::mat & children, uint child, double size, double alpha)
 {
     int i;
 
@@ -87,7 +84,7 @@ int grcreep(arma::mat & children, uint child, double size, double alpha)
     }
 }
 
-int grmutat(arma::mat & children, uint child, double alpha)
+void grmutat(arma::mat & children, uint child, double alpha)
 {
     int i;
 
@@ -98,4 +95,34 @@ int grmutat(arma::mat & children, uint child, double alpha)
             children(i, child) = R::runif(-1, 1);
         }
     }
+}
+
+arma::ivec primedecomp(int num)
+{
+    arma::ivec primes(num);
+
+    int i = 2;
+    int idx = 0;
+
+    while (i * i <= num)
+    {
+        if (num % i == 0)
+        {
+            primes(idx) = i;
+            num = num / i;
+            ++idx;
+        }
+        else
+        {
+            ++i;
+        }
+    }
+    if (num > 1)
+    {
+        primes(idx) = num;
+        ++idx;
+    }
+
+    primes.resize(idx);
+    return primes;
 }
