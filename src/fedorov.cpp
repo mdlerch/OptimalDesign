@@ -26,8 +26,6 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
     int out;
     // index of current (to remove) out == current(out_c) - 1
     int out_c;
-    // flag to make new proposition if proposed is already being used
-    int old_prop;
 
     // number of points in candidate set
     int N = candidateidx.n_rows;
@@ -101,7 +99,7 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
             out_c = rand() % n;
             out = current(out_c);
         }
-        while (in == out or old_prop);
+        while (in == out);
 
         // 2. Get the 3 Fedorov values based on the in and out
         // vectors to swap from design
@@ -203,5 +201,4 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
     }
 
     return current;
-
 }
