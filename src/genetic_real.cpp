@@ -13,7 +13,7 @@ int grmutat(arma::mat &, uint, double);
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-arma::mat geneticrealcpp(arma::mat parents, int n, int iterations, arma::uvec pidx)
+arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uvec pidx)
 {
     // parents is a matrix with each row being a vector of the design points
     //  with the first n being the first variable, the second n being the second
@@ -43,6 +43,10 @@ arma::mat geneticrealcpp(arma::mat parents, int n, int iterations, arma::uvec pi
             grcreep(children, child, .3, 0);
             grmutat(children, child, .5);
         }
+
+    // start by hardcoding a linear model ~X1 + X2
+
+
     }
 
     return children;

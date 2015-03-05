@@ -6,9 +6,9 @@ using namespace Rcpp;
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
-                      arma::uvec candidateidx, int crit, int iter,
-                      bool repeated)
+arma::uvec opt_montecarlo(const arma::mat& Xc, arma::uvec current,
+                          arma::uvec candidateidx, int crit, int iter,
+                          bool repeated)
 {
     // current is a vector of indexes in R's start at 1 style
     // candidateidx is a vector of indexes that are legal propositions
