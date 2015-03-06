@@ -17,7 +17,7 @@ clean:
 	-rm $(PKG_NAME)_$(PKG_VERS).tar.gz
 	-rm -rf $(PKG_NAME).Rcheck
 
-$(PKG_NAME)_$(PKG_VERS).tar.gz: src/fedorov.cpp src/initialDesign.cpp R/optimalDesign.R R/utility.R
+$(PKG_NAME)_$(PKG_VERS).tar.gz: DESCRIPTION
 	Rscript -e "Rcpp::compileAttributes()"
 	R CMD build ../OptimalDesign
 
