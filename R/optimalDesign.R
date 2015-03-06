@@ -13,7 +13,7 @@ optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
     # initial indices
     current <- initDesign(candidateX, n, repeated)
 
-    criteria <- c("D", "A", "G", "IV")
+    criteria <- c("D", "A", "G", "I")
     criterion <- match.arg(criterion, criteria)
 
     # initial set of legal swaps depends on repeated option
@@ -33,6 +33,8 @@ optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
         }
     }
 
+    x=2
+    
     if (criterion == "D")
     {
         current <- fedorovcpp(candidateX, current, candidateidx, 1, iter, repeated)
@@ -45,9 +47,13 @@ optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
     {
         current <- fedorovcpp(candidateX, current, candidateidx, 3, iter, repeated)
     }
+    else if (criterion == "I")
+    {
+        current <- fedorovcpp(candidateX, current, candidateidx, 4, iter, repeated)
+    }
     else
     {
-        stop("Only D, A, and G criteria are currently supported")
+        stop("Only D, A, G, and I criteria are currently supported")
     }
 
     # R indices start with 1

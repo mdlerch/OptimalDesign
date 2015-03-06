@@ -27,7 +27,7 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
     // index of current (to remove) out == current(out_c) - 1
     int out_c;
     // flag to make new proposition if proposed is already being used
-    int old_prop;
+    int old_prop = 0;
 
     // number of points in candidate set
     int N = candidateidx.n_rows;
@@ -54,9 +54,13 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
 
     // Get (X'X)^{-1}
     arma::mat xpxinv;
+    arma::mat xpxinv_temp;
     arma::mat X = Xc.rows(current);
     arma::inv(xpxinv, X.t() * X);
 
+    /**** Initial object(s) for I-criterion ****/
+    arma::mat B = (Xc.t() * Xc)/N;
+      
     /**** SVD matrices for g-criterion ****/
     // objects for SVD of candidate set
     arma::mat U_can;
@@ -121,6 +125,8 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
         // 3. Calculate the change in det( (X'X)^{-1} )
         delta_d = ((1 + dii) * (1 - doo) + dio * dio - 1);
 
+
+
         if (crit == 1) // Criteria D
         {
             delta = delta_d;
@@ -159,6 +165,21 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
             // if test g-criterion lower, delta > 0 indicates success
             delta = g_crit - g_crit_test;
         }
+        else if (crit == 4) // Criteria I
+        {
+            phiiim = row_in * xpxinv * B * xpxinv * row_in.t();
+            phiiom = row_out * xpxinv * B * xpxinv * row_in.t();
+            phioim = row_in * xpxinv * B * xpxinv * row_out.t();
+            phioom = row_out * xpxinv * B * xpxinv * row_out.t();
+
+            // convert phi values to double
+            phiii = phiiim(0, 0);
+            phiio = phiiom(0, 0);
+            phioi = phioim(0, 0);
+            phioo = phioom(0, 0);
+
+            delta = ( (1 - dii) * phioo + dio * (phiio + phioi) - (1 + doo) * phiii ) / (1 + delta_d);
+        }
 
         // 4. If delta > 0, accept, else revert (ie do nothing)
         if (delta > 0)
@@ -184,7 +205,7 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
             }
 
             // if new design not invertible, switch back
-            if (! arma::inv(xpxinv, X.t() * X))
+            if (! arma::inv(xpxinv_temp, X.t() * X))
             {
                 current(out_c) = out;
                 if (!repeated)
@@ -196,6 +217,11 @@ arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current,
                 {
                     g_crit = g_crit - delta;
                 }
+            }
+            // if new design is invertible, carry on
+            else
+            {
+                arma::inv(xpxinv, X.t() * X);
             }
         }
 

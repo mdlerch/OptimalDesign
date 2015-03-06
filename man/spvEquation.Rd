@@ -26,6 +26,8 @@
 \note{It is recommended that the variable names X1, X2, X3, ... be used
     (or something similar). Long variable names will make the SPV
     equation hard to read.
+
+    At the moment, this function assumes there is an intercept in the model.
 }
 \author{Michael Lerch and John Sherrill}
 \examples{
