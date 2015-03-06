@@ -2,6 +2,7 @@
 #include <algorithm>
 
 using namespace Rcpp;
+using namespace std;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 

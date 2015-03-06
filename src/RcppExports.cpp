@@ -7,8 +7,8 @@
 using namespace Rcpp;
 
 // opt_montecarlocpp
-arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current, arma::uvec candidateidx, int crit, int iter, bool repeated);
-RcppExport SEXP OptimalDesign_opt_montecarlocpp(SEXP XcSEXP, SEXP currentSEXP, SEXP candidateidxSEXP, SEXP critSEXP, SEXP iterSEXP, SEXP repeatedSEXP) {
+arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current, arma::uvec candidateidx, int crit, int iterations, bool repeated);
+RcppExport SEXP OptimalDesign_opt_montecarlocpp(SEXP XcSEXP, SEXP currentSEXP, SEXP candidateidxSEXP, SEXP critSEXP, SEXP iterationsSEXP, SEXP repeatedSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
@@ -17,9 +17,9 @@ BEGIN_RCPP
         Rcpp::traits::input_parameter< arma::uvec >::type current(currentSEXP );
         Rcpp::traits::input_parameter< arma::uvec >::type candidateidx(candidateidxSEXP );
         Rcpp::traits::input_parameter< int >::type crit(critSEXP );
-        Rcpp::traits::input_parameter< int >::type iter(iterSEXP );
+        Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP );
         Rcpp::traits::input_parameter< bool >::type repeated(repeatedSEXP );
-        arma::uvec __result = opt_montecarlocpp(Xc, current, candidateidx, crit, iter, repeated);
+        arma::uvec __result = opt_montecarlocpp(Xc, current, candidateidx, crit, iterations, repeated);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

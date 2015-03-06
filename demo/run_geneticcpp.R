@@ -1,15 +1,16 @@
 library(RcppArmadillo)
 
-Rcpp::sourceCpp("./src/genetic_real.cpp")
 
 M <- 10
 n <- 4
-parents <- matrix(NA, nrow = n * 2, ncol = 10)
+parents <- matrix(NA, nrow = n * 2, ncol = M)
 for (i in 1:M)
 {
     parents[ , i] <- runif(n * 2, -1, 1)
 }
 
-opt_geneticrealcpp(parents, n, 1, (1:M) - 1)
+Rcpp::sourceCpp("./src/genetic_real.cpp")
 
-cbind(children[ , 1], parents[ , 1])
+out <- opt_geneticrealcpp(parents, n, 10000, (1:M) - 1)
+
+cbind(out[ , 1], parents[ , 1])

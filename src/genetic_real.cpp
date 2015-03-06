@@ -3,6 +3,7 @@
 #include <algorithm>
 
 using namespace Rcpp;
+using namespace std;
 
 arma::ivec primedecomp(int);
 double get_delta_g(double, arma::mat, arma::mat);
@@ -28,10 +29,10 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uve
 
     int M = parents.n_cols;
     arma::uvec second_parent;
-    arma::cube xpxinv(n, parents.n_rows / n, M);
-    arma::mat X, xpxi;
+    arma::cube xpxinv(1 + parents.n_rows / n, 1 + parents.n_rows / n, M);
+    arma::mat X(n, 3), xpxi(3, 3);
     arma::vec Xv;
-    arma::mat rowin(1, 2);
+    arma::mat rowin(1, 3);
 
     arma::mat children = parents;
 
@@ -45,19 +46,29 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uve
 
     // make x'x.inv
 
+    int j;
+
     for (i = 0; i < M; ++i)
     {
         Xv = parents.col(i);
-        X = join_cols(Xv.subvec(0, n - 1), Xv.subvec(n, 2 * n - 1));
+        for (j = 0; j < n; j++)
+        {
+            X(j, 0) = 1;
+        }
+        X.col(1) = Xv.subvec(0, n - 1);
+        X.col(2) = Xv.subvec(n, 2 * n -1);
         arma::inv(xpxi, X.t() * X);
         xpxinv.slice(i) = xpxi;
     }
 
-    for (iter = 0; iter < M; ++iter)
+
+    iter = 0;
+    while(iter < iterations)
     {
         second_parent = RcppArmadillo::sample(pidx, M, false);
 
         children = parents;
+
 
         for (child=0; child<M; ++child)
         {
@@ -65,16 +76,23 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uve
             grcreep(children, child, .3, 0);
             grmutat(children, child, .5);
 
-            X = join_cols(parents.col(child).subvec(0, n - 1),
-                          parents.col(child).subvec(n, 2 * n - 1));
+            for (j = 0; j < n; ++j)
+            {
+                X(j, 0) = 1;
+            }
+
+
+            X.col(1) = parents.col(child).subvec(0, n - 1);
+            X.col(2) = parents.col(child).subvec(n, 2 * n - 1);
 
             for (i = 0; i < n; ++i)
             {
                 delta = 0;
                 if (X(i, 1) != children(i, child) | X(i, 2) != children(i + n, child))
                 {
-                    rowin(0, 0) = children(i, child);
-                    rowin(0, 1) = children(i + n, child);
+                    rowin(0, 0) = 1;
+                    rowin(0, 1) = children(i, child);
+                    rowin(0, 2) = children(i + n, child);
                     delta += get_delta_d(xpxinv.slice(child), rowin, X.row(i));
                     X.row(i) = rowin;
                 }
@@ -89,6 +107,7 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uve
                 }
             }
         }
+        iter++;
     }
 
     return parents;
@@ -180,11 +199,13 @@ arma::vec delta_common(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
 
     double delta;
 
-    arma::vec common;
+    arma::vec common(4);
+
 
     diim = row_in * xpxinv * row_in.t();
     doom = row_out * xpxinv * row_out.t();
     diom = row_in * xpxinv * row_out.t();
+
 
     // Fedorov values as double
     dii = diim(0, 0);
@@ -192,6 +213,7 @@ arma::vec delta_common(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
     dio = diom(0, 0);
 
     delta = ((1 + dii) * (1 - doo) + dio * dio - 1);
+
 
     common(0) = delta;
     common(1) = dii;
