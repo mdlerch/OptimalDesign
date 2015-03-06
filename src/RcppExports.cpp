@@ -6,9 +6,9 @@
 
 using namespace Rcpp;
 
-// fedorovcpp
-arma::uvec fedorovcpp(const arma::mat& Xc, arma::uvec current, arma::uvec candidateidx, int crit, int iter, bool repeated);
-RcppExport SEXP OptimalDesign_fedorovcpp(SEXP XcSEXP, SEXP currentSEXP, SEXP candidateidxSEXP, SEXP critSEXP, SEXP iterSEXP, SEXP repeatedSEXP) {
+// opt_montecarlocpp
+arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current, arma::uvec candidateidx, int crit, int iter, bool repeated);
+RcppExport SEXP OptimalDesign_opt_montecarlocpp(SEXP XcSEXP, SEXP currentSEXP, SEXP candidateidxSEXP, SEXP critSEXP, SEXP iterSEXP, SEXP repeatedSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
@@ -19,7 +19,25 @@ BEGIN_RCPP
         Rcpp::traits::input_parameter< int >::type crit(critSEXP );
         Rcpp::traits::input_parameter< int >::type iter(iterSEXP );
         Rcpp::traits::input_parameter< bool >::type repeated(repeatedSEXP );
-        arma::uvec __result = fedorovcpp(Xc, current, candidateidx, crit, iter, repeated);
+        arma::uvec __result = opt_montecarlocpp(Xc, current, candidateidx, crit, iter, repeated);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// opt_geneticrealcpp
+arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uvec pidx);
+RcppExport SEXP OptimalDesign_opt_geneticrealcpp(SEXP parentsSEXP, SEXP nSEXP, SEXP iterationsSEXP, SEXP pidxSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< arma::mat >::type parents(parentsSEXP );
+        Rcpp::traits::input_parameter< int >::type n(nSEXP );
+        Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP );
+        Rcpp::traits::input_parameter< arma::uvec >::type pidx(pidxSEXP );
+        arma::mat __result = opt_geneticrealcpp(parents, n, iterations, pidx);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

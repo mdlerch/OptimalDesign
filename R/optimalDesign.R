@@ -35,15 +35,15 @@ optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
 
     if (criterion == "D")
     {
-        current <- fedorovcpp(candidateX, current, candidateidx, 1, iter, repeated)
+        current <- opt_montecarlocpp(candidateX, current, candidateidx, 1, iter, repeated)
     }
     else if (criterion == "A")
     {
-        current <- fedorovcpp(candidateX, current, candidateidx, 2, iter, repeated)
+        current <- opt_montecarlocpp(candidateX, current, candidateidx, 2, iter, repeated)
     }
     else if (criterion == "G")
     {
-        current <- fedorovcpp(candidateX, current, candidateidx, 3, iter, repeated)
+        current <- opt_montecarlocpp(candidateX, current, candidateidx, 3, iter, repeated)
     }
     else
     {

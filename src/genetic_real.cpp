@@ -4,9 +4,8 @@
 
 using namespace Rcpp;
 
-
-
 arma::ivec primedecomp(int);
+double get_delta_g(double, arma::mat, arma::mat);
 double get_delta_d(arma::mat, arma::mat, arma::mat);
 double get_delta_a(arma::mat, arma::mat, arma::mat);
 arma::vec delta_common(arma::mat, arma::mat, arma::mat);
@@ -24,24 +23,25 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uve
     //  varaible etc.
     // n is the design size
     // iterations is the number of iterations of the genetic algorithm
-    // pidx is just 1:M where M is number of parents (easier to pass than write
+    // pidx is just 1:M where M is number of parents; easier to pass than write
     //  in c++!
 
     int M = parents.n_cols;
     arma::uvec second_parent;
     arma::cube xpxinv(n, parents.n_rows / n, M);
-    arma::mat xpxi;
-    arma::mat X;
+    arma::mat X, xpxi;
     arma::vec Xv;
+    arma::mat rowin(1, 2);
 
     arma::mat children = parents;
 
     int iter, child;
 
     int i;
+    double delta;
 
     // hard code ~X1 + X2 for now.  Later use primedecomp to get actual design
-    // hard code D criterion.
+    // hard code D criterion for now add other criteria later.
 
     // make x'x.inv
 
@@ -53,8 +53,7 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uve
         xpxinv.slice(i) = xpxi;
     }
 
-
-    for (iter=0; iter<M; ++iter)
+    for (iter = 0; iter < M; ++iter)
     {
         second_parent = RcppArmadillo::sample(pidx, M, false);
 
@@ -65,14 +64,34 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uve
             grblend(children, child, parents, second_parent, 0);
             grcreep(children, child, .3, 0);
             grmutat(children, child, .5);
+
+            X = join_cols(parents.col(child).subvec(0, n - 1),
+                          parents.col(child).subvec(n, 2 * n - 1));
+
+            for (i = 0; i < n; ++i)
+            {
+                delta = 0;
+                if (X(i, 1) != children(i, child) | X(i, 2) != children(i + n, child))
+                {
+                    rowin(0, 0) = children(i, child);
+                    rowin(0, 1) = children(i + n, child);
+                    delta += get_delta_d(xpxinv.slice(child), rowin, X.row(i));
+                    X.row(i) = rowin;
+                }
+            }
+            if (delta > 0)
+            {
+
+                if (arma::inv(xpxi, X.t() * X))
+                {
+                    parents.col(child) = children.col(child);
+                    xpxinv.slice(child);
+                }
+            }
         }
-
-
-
-
     }
 
-    return children;
+    return parents;
 }
 
 void grblend(arma::mat & children, uint child, arma::mat parents, arma::uvec parent2, double alpha)
@@ -224,3 +243,29 @@ double get_delta_a(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
 
     return delta;
 }
+
+double get_delta_g(double g_crit_old, arma::mat X, arma::mat U_can)
+{
+    double delta;
+    arma::mat Dinv, svd_thing;
+    arma::mat U, V;
+
+    arma::vec s, leverages;
+
+    double g_crit;
+
+    arma::svd_econ(U, s, V, X, "right");
+
+    s = 1 / s;
+
+    Dinv= arma::diagmat(s);
+
+    svd_thing = U_can * V * Dinv;
+    svd_thing = svd_thing % svd_thing;
+    leverages = arma::sum(svd_thing, 1);
+    g_crit = leverages.max();
+
+    return g_crit - g_crit_old;
+}
+
+
