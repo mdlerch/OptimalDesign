@@ -47,7 +47,6 @@ arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current,
 
     // Get (X'X)^{-1}
     arma::mat xpxinv;
-    arma::mat xpxinv_backup;
     arma::mat X = Xc.rows(current);
     arma::inv(xpxinv, X.t() * X);
 
@@ -114,11 +113,6 @@ arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current,
 
             X = Xc.rows(current);
 
-            if (crit == 3)
-            {
-                g_crit = g_crit + delta;
-            }
-
             // if not allowing repeated, update the legal candidates
             // this should be just swapping the one I am putting in with
             // the one I just pulled out
@@ -127,26 +121,24 @@ arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current,
                 candidateidx(in_c) = out;
             }
 
-            // if new design not invertible, switch back and reset g_crit
-            if (! arma::inv(xpxinv, X.t() * X))
+            // if new design not invertible, switch back
+            // john found the 1e15 bound on stack overflow. might work
+            if (cond(X.t() * X) > 1e15)
             {
-                xpxinv = xpxinv_backup;
-                
                 current(out_c) = out;
                 if (!repeated)
                 {
                     candidateidx(in_c) = in;
                 }
-
-                if (crit == 3)
-                {
-                    g_crit = g_crit - delta;
-                }
             }
             else
             {
-                // if new design is invertible, update backup xpxinv
-                xpxinv_backup = xpxinv;
+                xpxinv = inv(X.t() * X);
+                
+                if (crit == 3)
+                {
+                    g_crit = g_crit + delta;
+                }
             }
         }
 

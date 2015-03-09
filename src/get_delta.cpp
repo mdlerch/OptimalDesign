@@ -53,7 +53,7 @@ double get_delta_a(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
     double phiii, phioo, phiio, phioi;
 
     double delta;
-    
+
     arma::vec common;
 
     common = delta_common(xpxinv, row_in, row_out);
@@ -74,7 +74,7 @@ double get_delta_a(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
     phioi = phioim(0, 0);
     phioo = phioom(0, 0);
 
-    delta = ( (1 - dii) * phioo + dio * (phiio + phioi) - (1 + doo) * phiii ) / (1 + delta_d);
+    delta = ( (1 - doo) * phiii + dio * (phiio + phioi) - (1 + dii) * phioo ) / (1 + delta_d);
 
     return delta;
 }
@@ -108,9 +108,9 @@ double get_delta_g(double g_crit_old, arma::mat X, arma::mat U_can)
 
 double get_delta_i(arma::mat xpxinv, arma::mat row_in, arma::mat row_out, arma::mat B)
 {
-    // fedorov A phi values as matrices
+    // fedorov I phi values as matrices
     arma::mat phiiim, phioom, phiiom, phioim;
-    // fedorov A phi values as double
+    // fedorov I phi values as double
     double phiii, phioo, phiio, phioi;
 
     double delta;
@@ -135,7 +135,7 @@ double get_delta_i(arma::mat xpxinv, arma::mat row_in, arma::mat row_out, arma::
     phioi = phioim(0, 0);
     phioo = phioom(0, 0);
 
-    delta = ( (1 - dii) * phioo + dio * (phiio + phioi) - (1 + doo) * phiii ) / (1 + delta_d);
+    delta = ( (1 - doo) * phiii + dio * (phiio + phioi) - (1 + dii) * phioo ) / (1 + delta_d);
 
     return delta;
 }
