@@ -51,6 +51,10 @@ optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
     {
         current <- fedorovcpp(candidateX, current, candidateidx, 4, iter, repeated)
     }
+    else if (criterion == "I")
+    {
+        current <- fedorovcpp(candidateX, current, candidateidx, 4, iter, repeated)
+    }
     else
     {
         stop("Only D, A, G, and I criteria are currently supported")
