@@ -33,8 +33,6 @@ optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
         }
     }
 
-    x=2
-    
     if (criterion == "D")
     {
         current <- opt_montecarlocpp(candidateX, current, candidateidx, 1, iter, repeated)

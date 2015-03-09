@@ -47,6 +47,7 @@ arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current,
 
     // Get (X'X)^{-1}
     arma::mat xpxinv;
+    arma::mat xpxinv_backup;
     arma::mat X = Xc.rows(current);
     arma::inv(xpxinv, X.t() * X);
 
@@ -129,6 +130,8 @@ arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current,
             // if new design not invertible, switch back and reset g_crit
             if (! arma::inv(xpxinv, X.t() * X))
             {
+                xpxinv = xpxinv_backup;
+                
                 current(out_c) = out;
                 if (!repeated)
                 {
@@ -139,6 +142,11 @@ arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current,
                 {
                     g_crit = g_crit - delta;
                 }
+            }
+            else
+            {
+                // if new design is invertible, update backup xpxinv
+                xpxinv_backup = xpxinv;
             }
         }
 
