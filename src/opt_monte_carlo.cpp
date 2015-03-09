@@ -9,6 +9,7 @@ using namespace std;
 double get_delta_g(double, arma::mat, arma::mat);
 double get_delta_d(arma::mat, arma::mat, arma::mat);
 double get_delta_a(arma::mat, arma::mat, arma::mat);
+double get_delta_i(arma::mat, arma::mat, arma::mat, arma::mat);
 arma::vec delta_common(arma::mat, arma::mat, arma::mat);
 
 // [[Rcpp::export]]
@@ -49,7 +50,10 @@ arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current,
     arma::mat X = Xc.rows(current);
     arma::inv(xpxinv, X.t() * X);
 
-    /**** SVD matrices for g-criterion ****/
+    /**** Initial object(s) for i-criterion ****/
+    arma::mat B = (Xc.t() * Xc) / N;
+
+    /**** Initial object(s) for g-criterion ****/
     // objects for SVD of candidate set
     arma::mat U_can, V_can, D_can;
     arma::vec s_can;
@@ -94,6 +98,10 @@ arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current,
         else if (crit == 3) // Criteria G
         {
             delta = get_delta_g(g_crit, Xc.rows(current), U_can);
+        }
+        else if (crit == 4) // Criteria I
+        {
+            delta = get_delta_i(xpxinv, Xc.row(in), Xc.row(out), B);
         }
 
         // 3. If delta > 0, accept, else revert (ie do nothing)

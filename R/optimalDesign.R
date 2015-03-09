@@ -49,11 +49,7 @@ optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
     }
     else if (criterion == "I")
     {
-        current <- fedorovcpp(candidateX, current, candidateidx, 4, iter, repeated)
-    }
-    else if (criterion == "I")
-    {
-        current <- fedorovcpp(candidateX, current, candidateidx, 4, iter, repeated)
+        current <- opt_montecarlocpp(candidateX, current, candidateidx, 4, iter, repeated)
     }
     else
     {

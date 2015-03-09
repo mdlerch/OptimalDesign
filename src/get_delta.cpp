@@ -53,7 +53,7 @@ double get_delta_a(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
     double phiii, phioo, phiio, phioi;
 
     double delta;
-
+    
     arma::vec common;
 
     common = delta_common(xpxinv, row_in, row_out);
@@ -82,6 +82,7 @@ double get_delta_a(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
 double get_delta_g(double g_crit_old, arma::mat X, arma::mat U_can)
 {
     double delta;
+
     arma::mat Dinv, svd_thing;
     arma::mat U, V;
 
@@ -100,7 +101,41 @@ double get_delta_g(double g_crit_old, arma::mat X, arma::mat U_can)
     leverages = arma::sum(svd_thing, 1);
     g_crit = leverages.max();
 
-    return g_crit - g_crit_old;
+    delta = g_crit - g_crit_old;
+    
+    return delta;
 }
 
+double get_delta_i(arma::mat xpxinv, arma::mat row_in, arma::mat row_out, arma::mat B)
+{
+    // fedorov A phi values as matrices
+    arma::mat phiiim, phioom, phiiom, phioim;
+    // fedorov A phi values as double
+    double phiii, phioo, phiio, phioi;
 
+    double delta;
+    
+    arma::vec common;
+
+    common = delta_common(xpxinv, row_in, row_out);
+
+    double delta_d = common(0);
+    double dii = common(1);
+    double dio = common(2);
+    double doo = common(3);
+
+    phiiim = row_in * xpxinv * B * xpxinv * row_in.t();
+    phiiom = row_out * xpxinv * B * xpxinv * row_in.t();
+    phioim = row_in * xpxinv * B * xpxinv * row_out.t();
+    phioom = row_out * xpxinv * B * xpxinv * row_out.t();
+
+    // convert phi values to double
+    phiii = phiiim(0, 0);
+    phiio = phiiom(0, 0);
+    phioi = phioim(0, 0);
+    phioo = phioom(0, 0);
+
+    delta = ( (1 - dii) * phioo + dio * (phiio + phioi) - (1 + doo) * phiii ) / (1 + delta_d);
+
+    return delta;
+}
