@@ -14,7 +14,8 @@ arma::vec delta_common(arma::mat, arma::mat, arma::mat);
 
 // [[Rcpp::export]]
 arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current,
-                             arma::uvec candidateidx, int crit, int iterations,
+                             arma::uvec candidateidx, const arma::mat& Xe,
+                             int crit, int iterations,
                              bool repeated)
 {
     // Xc is the X matrix for all candidate points.
@@ -51,13 +52,13 @@ arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current,
     arma::inv(xpxinv, X.t() * X);
 
     /**** Initial object(s) for i-criterion ****/
-    arma::mat B = (Xc.t() * Xc) / N;
+    arma::mat B = (Xe.t() * Xe) / N;
 
     /**** Initial object(s) for g-criterion ****/
     // objects for SVD of candidate set
     arma::mat U_can, V_can, D_can;
     arma::vec s_can;
-    arma::svd_econ(U_can, s_can, V_can, Xc, "left");
+    arma::svd_econ(U_can, s_can, V_can, Xe, "left");
 
     // objects for SVD of current design
     arma::mat U, V;
@@ -134,7 +135,7 @@ arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current,
             else
             {
                 xpxinv = inv(X.t() * X);
-                
+
                 if (crit == 3)
                 {
                     g_crit = g_crit + delta;

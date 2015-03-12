@@ -1,5 +1,5 @@
 optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
-                          repeated = TRUE)
+                          evaluation = candidate, repeated = TRUE)
 {
 
     if (repeated == FALSE && n > nrow(candidate))
@@ -9,6 +9,7 @@ optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
 
     # convert dataframe of design points to matrix of model points
     candidateX <- model.matrix(formula, candidate)
+    evaluationX <- model.matrix(formula, evaluation)
 
     # initial indices
     current <- initDesign(candidateX, n, repeated)
@@ -35,19 +36,19 @@ optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
 
     if (criterion == "D")
     {
-        current <- opt_montecarlocpp(candidateX, current, candidateidx, 1, iter, repeated)
+        current <- opt_montecarlocpp(candidateX, current, candidateidx, evaluationX, 1, iter, repeated)
     }
     else if (criterion == "A")
     {
-        current <- opt_montecarlocpp(candidateX, current, candidateidx, 2, iter, repeated)
+        current <- opt_montecarlocpp(candidateX, current, candidateidx, evaluationX, 2, iter, repeated)
     }
     else if (criterion == "G")
     {
-        current <- opt_montecarlocpp(candidateX, current, candidateidx, 3, iter, repeated)
+        current <- opt_montecarlocpp(candidateX, current, candidateidx, evaluationX, 3, iter, repeated)
     }
     else if (criterion == "I")
     {
-        current <- opt_montecarlocpp(candidateX, current, candidateidx, 4, iter, repeated)
+        current <- opt_montecarlocpp(candidateX, current, candidateidx, evaluationX, 4, iter, repeated)
     }
     else
     {

@@ -9,7 +9,7 @@ opt_geneticrealcpp <- function(parents, n, iterations, pidx) {
     .Call('OptimalDesign_opt_geneticrealcpp', PACKAGE = 'OptimalDesign', parents, n, iterations, pidx)
 }
 
-opt_montecarlocpp <- function(Xc, current, candidateidx, crit, iterations, repeated) {
-    .Call('OptimalDesign_opt_montecarlocpp', PACKAGE = 'OptimalDesign', Xc, current, candidateidx, crit, iterations, repeated)
+opt_montecarlocpp <- function(Xc, current, candidateidx, Xe, crit, iterations, repeated) {
+    .Call('OptimalDesign_opt_montecarlocpp', PACKAGE = 'OptimalDesign', Xc, current, candidateidx, Xe, crit, iterations, repeated)
 }
 
