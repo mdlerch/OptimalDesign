@@ -1,0 +1,28 @@
+\documentclass{article}
+\usepackage{fullpage, graphicx, verbatim, amsmath}
+
+\title{\vspace{-70pt} Optimal Design Foundations \vspace{-10pt}}
+\author{John Sherrill\vspace{-20pt}}
+\date{Spring 2015 \vspace{-10pt}}
+
+\begin{document}
+
+<<setupthis, include=F, cache=F, message=F>>=
+library(knitr)
+knit('optimalDesign.Rnw')
+    opts_chunk$set(fig.align="center", fig.width=5, fig.height=4, out.width=".5\\linewidth", tidy=T)
+    options(replace.assign=TRUE,width=75, digits = 3, max.print="75", show.signif.stars = FALSE)
+    require(xtable)
+@
+
+\maketitle
+
+\section{Motivation}
+
+\section{Scaled Prediction Variance Function Derivation}
+
+\section{Criterions}
+
+\section{Fedorov Algorithm}
+
+\end{document}
