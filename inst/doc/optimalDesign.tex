@@ -9,86 +9,79 @@
     \Gin@nat@width
   \fi
 }
+\makeatother
 
-\end{Sinput}
-\begin{Soutput}
-  |                                                                       
-  |                                                                 |   0%
-  |                                                                       
-  |.............                                                    |  20%
-  ordinary text without R code
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
 
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
 
-  |                                                                       
-  |..........................                                       |  40%
-label: uh
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
-  |                                                                       
-  |.......................................                          |  60%
-  ordinary text without R code
+\usepackage{alltt}
+\usepackage{fullpage, graphicx, verbatim, amsmath}
 
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
 
-  |                                                                       
-  |....................................................             |  80%
-label: setupthis (with options) 
-List of 3
- $ include: symbol F
- $ cache  : symbol F
- $ message: symbol F
-
-
-  |                                                                       
-  |.................................................................| 100%
-  ordinary text without R code
-
-
-[1] "optimalDesign.tex"
-\end{Soutput}
-\end{Schunk}
-
-\begin{Schunk}
-\begin{Sinput}
->     opts_chunk$set(fig.align="center", fig.width=5, fig.height=4, out.width=".5\\linewidth", tidy=T)
->     options(replace.assign=TRUE,width=75, digits = 3, max.print="75", show.signif.stars = FALSE)
->     require(xtable)
-\end{Sinput}
-\end{Schunk}
-
-\maketitle
-
-\section{Motivation}
-
-\section{Scaled Prediction Variance Function Derivation}
-
-\section{Criterions}
-
-\section{Fedorov Algorithm}
-
-\end{document}
-Spring 2015 \vspace{-10pt}}
+\title{\vspace{-70pt} Optimal Design Foundations \vspace{-10pt}}
+\author{John Sherrill\vspace{-20pt}}
+\date{Spring 2015 \vspace{-10pt}}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{library}\hlstd{(knitr)}
-\hlkwd{knit}\hlstd{(}\hlstr{'optimalDesign.Rnw'}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# \\\#\# processing file: optimalDesign.Rnw}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in parse\_block(g[-1], g[1], params.src): duplicate label 'uh'}}\end{kframe}
-\end{knitrout}
-
 
 
 \maketitle
 
 \section{Motivation}
 
+Algorithmic design is primarily concerned with the generation of experimental designs by computation having specified characteristics. These characteristics are often made with respect to a given model:
+
+$$ y = X\beta + \epsilon $$
+$$ \epsilon \sim N(0, \sigma^2) $$
+
+While a great many characteristics exist (blocking, completeness, balance, orthogonality, confoundedness, etc.) those of present interest concerning the variance of predicted values of a model.
+
 \section{Scaled Prediction Variance Function Derivation}
+
+Say there are $p$ parameters if in the above model. If $b$ is the OLS estimate of $\beta$ then
+\begin{align*}
+\Var[\hat{y}(x) | X] &= \Var[xb] \\
+	&= \Var[x_1 b_1 + x_2 b_2 + \cdots + x_p b_b] \\
+	&= \sum_{i,j} \Cov(x_i b_i, x_k b_j) \\
+	&= \sum_{i,j} x_i \Cov(b_i, b_j) x_j \\
+	&= x \sigma (X^' X)^{-1} x
+\end{align*}
 
 \section{Criterions}
 

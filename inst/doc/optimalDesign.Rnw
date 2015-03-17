@@ -1,18 +1,16 @@
 \documentclass{article}
 \usepackage{fullpage, graphicx, verbatim, amsmath}
 
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+
 \title{\vspace{-70pt} Optimal Design Foundations \vspace{-10pt}}
 \author{John Sherrill\vspace{-20pt}}
 \date{Spring 2015 \vspace{-10pt}}
 
 \begin{document}
 
-<<uh>>=
-library(knitr)
-knit('optimalDesign.Rnw')
-@ 
-
-<<setupthis, include=F, cache=F, message=F>>=
+<<setup, include=F, cache=F, message=F>>=
     opts_chunk$set(fig.align="center", fig.width=5, fig.height=4, out.width=".5\\linewidth", tidy=T)
     options(replace.assign=TRUE,width=75, digits = 3, max.print="75", show.signif.stars = FALSE)
     require(xtable)
@@ -22,8 +20,26 @@ knit('optimalDesign.Rnw')
 
 \section{Motivation}
 
+Algorithmic design is primarily concerned with the generation of experimental designs by computation having specified characteristics. These characteristics are often made with respect to a given model:
+
+$$ y = X\beta + \epsilon $$
+$$ \epsilon \sim N(0, \sigma^2) $$
+
+While a great many characteristics exist (blocking, completeness, balance, orthogonality, confoundedness, etc.) those of present interest concerning the variance of predicted values of a model.
+
 \section{Scaled Prediction Variance Function Derivation}
 
+Say there are $p$ parameters if in the above model. If $b$ is the OLS estimate of $\beta$ then
+\begin{align*}
+\Var[\hat{y}(x) | X] &= \Var[xb] \\
+	&= \Var[x_1 b_1 + x_2 b_2 + \cdots + x_p b_b] \\
+	&= \sum_{i,j} \Cov(x_i b_i, x_k b_j) \\
+	&= \sum_{i,j} x_i \Cov(b_i, b_j) x_j \\
+	&= x \sigma (X^' X)^{-1} x
+\end{align*}
+
+Although, to be able to make comparisons between designs of different size, we will use the ``Scaled Prediction Variance'' function. This
+$$ SPV(x) = \frac{N \Var[\hat{y}(x)]}{\sigma^2} = N x^' (X^' X)^{-1} x $$
 \section{Criterions}
 
 \section{Fedorov Algorithm}
