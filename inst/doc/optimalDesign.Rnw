@@ -20,28 +20,84 @@
 
 \section{Motivation}
 
-Algorithmic design is primarily concerned with the generation of experimental designs by computation having specified characteristics. These characteristics are often made with respect to a given model:
+Algorithmic design is primarily concerned with the generation of experimental designs by computational means. Particular design characteristics are usually desired and these characteristics are often made with respect to a given model:
 
-$$ y = X\beta + \epsilon $$
-$$ \epsilon \sim N(0, \sigma^2) $$
+$$ \textbf{y} = X\beta + \epsilon $$
+$$ \epsilon_i \stackrel{iid}{\sim} (0, \sigma^2) $$
 
-While a great many characteristics exist (blocking, completeness, balance, orthogonality, confoundedness, etc.) those of present interest concerning the variance of predicted values of a model.
+It's got $p$ parameters. A specific design region, $R$, is usually specified such that the design properties of $X$ are only considered over $\textbf{x} \in R$. While a great many characteristics exist (blocking, completeness, balance, orthogonality, confoundedness, etc.) those of present interest concern the variance of predicted values of a model.
+
+Much of what is available in evaluation and comparison of RSM designs as well as computer-generated design were the work of Kiefer (1959, 1961) and Keifer and Wolfowitz (1959) in \textbf{optimal design theory}. Their work is couched in a measure theoretic approach in which an experimental is viewed in terms of design measure. Design optimality moved into the practical arena in the 1970s and 1980s as designs were put forth as being efficient in terms of criteria inspired by Keifer and his coworkers. (Montgomery 8.2)
 
 \section{Scaled Prediction Variance Function Derivation}
 
-Say there are $p$ parameters if in the above model. If $b$ is the OLS estimate of $\beta$ then
+Say there are $p$ parameters in the above model. If $\textbf{b}$ is the OLS estimate of $\beta$ then the variance of the predicted values is given by
 \begin{align*}
-\Var[\hat{y}(x) | X] &= \Var[xb] \\
-	&= \Var[x_1 b_1 + x_2 b_2 + \cdots + x_p b_b] \\
-	&= \sum_{i,j} \Cov(x_i b_i, x_k b_j) \\
-	&= \sum_{i,j} x_i \Cov(b_i, b_j) x_j \\
-	&= x \sigma (X^' X)^{-1} x
+  \Var[\hat{\textbf{y}}(\textbf{x}) | X] &= \Var[\textbf{xb}] \\
+  &= \Var[x_1 b_1 + x_2 b_2 + \cdots + x_p b_b] \\
+  &= \sum_{i,j} \Cov(x_i b_i, x_k b_j) \\
+  &= \sum_{i,j} x_i \Cov(b_i, b_j) x_j \\
+  &= \textbf{x}' \Var[\textbf{b} | X] \textbf{x} \\
+  &= \textbf{x}' E[(b-E(b)) (b-E(b))' | X] \textbf{x} \\
+  &= \textbf{x}' E[(b-\beta)(b-\beta)' | X] \textbf{x} \\
 \end{align*}
 
-Although, to be able to make comparisons between designs of different size, we will use the ``Scaled Prediction Variance'' function. This
-$$ SPV(x) = \frac{N \Var[\hat{y}(x)]}{\sigma^2} = N x^' (X^' X)^{-1} x $$
+Note that $b=(X'X)^{-1} X'\textbf{y} = (X'X)^{-1}X'(X\beta+\epsilon) = \beta + (X'X)^{-1} X'\epsilon$
+
+\begin{align*}
+  &= \textbf{x}' E[(\beta + (X'X)^{-1}X'\epsilon - \beta)(\beta + (X'X)^{-1}X'\epsilon - \beta)' | X] \textbf{x} \\
+  &= \textbf{x}' E[(X'X)^{-1}X'\epsilon)((X'X)^{-1}X'\epsilon)' | X] \textbf{x} \\
+  &= \textbf{x}' E[(X'X)^{-1}X'\epsilon \epsilon' X (X'X)^{-1} | X] \textbf{x} \\
+  &= \textbf{x}' (X'X)^{-1} X' E[\epsilon \epsilon' | X] X(X'X)^{-1} \textbf{x} \\
+\end{align*}
+
+Assuming that $\epsilon \stackrel{iid}{\sim} N(0,\sigma^2) $,
+
+\begin{align*}
+  &= \textbf{x}' (X'X)^{-1} X' \sigma^2 I X(X'X)^{-1} \textbf{x} \\
+  &= \textbf{x}' \sigma (X' X)^{-1} \textbf{x}
+\end{align*}
+
+Use SSE/n-p as estimator for sigma 2. Although, to be able to make comparisons between designs of different size, we will use the ``Scaled Prediction Variance'' (SPV) function. All things being equal, designs of larger sizes will have smaller prediction variances and multiplying by the design size provides a measure of prediction variance on a per-observation basis. Dividing by $sigma^2$ makes the SPV scale-free. Thus we have
+$$ SPV(\textbf{x}) = \frac{N \Var[\hat{\textbf{y}}(\textbf{x})]}{\sigma^2} = N \textbf{x}' (X' X)^{-1} \textbf{x} $$
+
+This allows for cost comparisons between designs (Montgomery, 7.4.4). The division by $\sigma^2$ means that these quantities are a function of only the design matrix and do not require data to have been collected.
+
 \section{Criterions}
+\begin{itemize}
+\item Information matrix = $X'X$ (wikipedia)
+\item Moment matrix = $\frac{X'X}{N}$ (Montegomery, location 6987) (called Information matrix by Montegomery, 7.4.4, location 7143)
+\item Variance matrix = $(X'X)^{-1}$ (wikipedia)
+\item Covariance = $\frac{M^{-1}\sigma^2}{N}$ where ${X'V^{-1}X}{N}$ (Wheeler)
+\item Dispersion matrix = $X'X$ (Wheeler, p48)
+\end{itemize}
+
+Thus we seek to minimize $(X'X)^{-1}$ in some way. There are several ways in which this can be attempted that are supported in the \texttt{OptimalDesign} package
+
+\subsection{D Criterion}
+Maximize over all designs $X$
+$$ \mbox{D Criterion} = \frac{|X'X|}{N^p} $$
+
+This minimizes the volume of the confidence hyperellipsoid for parameter estimates. This is because $|X'X|$ is inversely proportional to the square of the volume of the confidence hyperellipsoid.
+
+Woodbury formula and other one
+
+\subsection{A Criterion}
+
+linearity formula
+
+\subsection{I Criterion}
+
+linearity formula
+
+\subsection{G Criterion}
+
+john special
 
 \section{Fedorov Algorithm}
+
+Define Fedorov Algorith. Explain that \texttt{OptimalDesign} uses a Monte Carlo style version of this algorithm
+
+\section{Genetic Algorithm}
 
 \end{document}
