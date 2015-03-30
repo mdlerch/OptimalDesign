@@ -19,15 +19,21 @@ double adaptalpha(arma::vec, arma::uvec);
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uvec pidx)
+arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
+                             int iterations, arma::uvec pidx)
 {
     // parents is a matrix with each row being a vector of the design points
     //  with the first n being the first variable, the second n being the second
     //  varaible etc.
     // n is the design size
+    // formula is a vector of prime numbers that allows us to build the X matrix
+    //  based on just the inputs which are provided by parents.
     // iterations is the number of iterations of the genetic algorithm
-    // pidx is just 1:M where M is number of parents; easier to pass than write
-    //  in c++!
+    // pidx (parent index) is just 1:M where M is number of parents; easier to
+    //  pass than write in c++!
+
+    // number of parameters
+    int K = formula.n_elem;
 
     // number of parents
     int M = parents.n_cols;
@@ -76,6 +82,8 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uve
             grmutat(children, child, alphamutat(child));
             grbound(children, child, alphabound(child));
 
+            // NEED TO UPDATE THESE THINGS FOR THE STUFF
+            // HARD CODE AN INTERCEPT FOR NOW.  ADD OPTION LATER.
             for (int j = 0; j < n; ++j)
             {
                 X(j, 0) = 1;
@@ -204,9 +212,7 @@ arma::ivec primedecomp(int num)
 {
     arma::ivec primes(num);
 
-    int i = 2;
-    int idx = 0;
-
+    int i = 2, idx = 0;
     while (i * i <= num)
     {
         if (num % i == 0)
@@ -241,11 +247,9 @@ arma::vec delta_common(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
 
     arma::vec common(4);
 
-
     diim = row_in * xpxinv * row_in.t();
     doom = row_out * xpxinv * row_out.t();
     diom = row_in * xpxinv * row_out.t();
-
 
     // Fedorov values as double
     dii = diim(0, 0);

@@ -10,7 +10,12 @@ for (i in 1:M)
 
 Rcpp::sourceCpp("./src/opt_genetic_real.cpp")
 
-out <- opt_geneticrealcpp(parents, n, 100000, (1:M) - 1)
+formula <- ~X1 * X2
+design <- data.frame(X1 = 2, X2 = 3)
+X <- model.matrix(formula, design)
+X <- as.numeric(X)
+
+out <- opt_geneticrealcpp(parents, n, X, 100000, (1:M) - 1)
 
 cbind(out[ , 1], parents[ , 1])
 
