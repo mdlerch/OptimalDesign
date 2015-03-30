@@ -10,6 +10,7 @@ for (i in 1:M)
 
 Rcpp::sourceCpp("./src/opt_genetic_real.cpp")
 
-out <- opt_geneticrealcpp(parents, n, 10000, (1:M) - 1)
+out <- opt_geneticrealcpp(parents, n, 100000, (1:M) - 1)
 
 cbind(out[ , 1], parents[ , 1])
+

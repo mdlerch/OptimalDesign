@@ -13,6 +13,8 @@ arma::vec delta_common(arma::mat, arma::mat, arma::mat);
 void grblend(arma::mat &, uint, arma::mat, arma::uvec, double);
 void grcreep(arma::mat &, uint, double size, double);
 void grmutat(arma::mat &, uint, double);
+void grbound(arma::mat &, uint, double);
+double adaptalpha(arma::vec, arma::uvec);
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
@@ -33,17 +35,14 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uve
     // all parents have their own child
     arma::mat children = parents;
 
-    arma::cube xpxinv(1 + parents.n_rows / n, 1 + parents.n_rows / n, M);
-
     // hard code ~X1 + X2 for now.  Later use primedecomp to get actual design
     arma::mat X(n, 3), xpxi(3, 3);
-    // hard code D criterion for now add other criteria later.
-
-    // make x'x.inv
+    arma::cube xpxinv(1 + parents.n_rows / n, 1 + parents.n_rows / n, M);
 
     // Change in criterion
     double delta;
 
+    // hard code D criterion for now add other criteria later.
     for (int i = 0; i < M; ++i)
     {
         arma::vec Xv = parents.col(i);
@@ -57,6 +56,12 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uve
         xpxinv.slice(i) = xpxi;
     }
 
+    arma::vec alphablend = arma::randu<arma::vec>(M);
+    arma::vec alphacreep = arma::randu<arma::vec>(M);
+    arma::vec alphamutat = arma::randu<arma::vec>(M);
+    arma::vec alphabound = arma::randu<arma::vec>(M);
+    arma::uvec swap(M);
+
     int iter = 0;
     while(iter < iterations)
     {
@@ -66,9 +71,10 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uve
 
         for (int child=0; child<M; ++child)
         {
-            grblend(children, child, parents, second_parent, 0);
-            grcreep(children, child, .3, 0);
-            grmutat(children, child, .5);
+            grblend(children, child, parents, second_parent, alphablend(child));
+            grcreep(children, child, .3, alphacreep(child));
+            grmutat(children, child, alphamutat(child));
+            grbound(children, child, alphabound(child));
 
             for (int j = 0; j < n; ++j)
             {
@@ -91,16 +97,32 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, int iterations, arma::uve
                     X.row(i) = rowin;
                 }
             }
+            swap(child) = 0;
             if (delta > 0)
             {
-
                 if (arma::inv(xpxi, X.t() * X))
                 {
                     parents.col(child) = children.col(child);
-                    xpxinv.slice(child);
+                    xpxinv.slice(child) = xpxi;
+                    swap(child) = 1;
                 }
             }
         }
+        double newalphablend = adaptalpha(alphablend, swap);
+        double newalphacreep = adaptalpha(alphacreep, swap);
+        double newalphamutat = adaptalpha(alphamutat, swap);
+        double newalphabound = adaptalpha(alphabound, swap);
+        for (int child = 0; child < M; ++child)
+        {
+            if (swap(child))
+            {
+                alphablend(child) = newalphablend;
+                alphacreep(child) = newalphacreep;
+                alphamutat(child) = newalphamutat;
+                alphabound(child) = newalphabound;
+            }
+        }
+
         iter++;
     }
 
@@ -155,6 +177,25 @@ void grmutat(arma::mat & children, uint child, double alpha)
         if (R::runif(0, 1) < alpha)
         {
             children(i, child) = R::runif(-1, 1);
+        }
+    }
+}
+
+// Jump to a boundary (-1 or 1) depending on sign of current value
+void grbound(arma::mat & children, uint child, double alpha)
+{
+    for (int i = 0; i < children.n_rows; ++i)
+    {
+        if (R::runif(0, 1) < alpha)
+        {
+            if (children(i, child) < 0)
+            {
+                children(i, child) = -1;
+            }
+            else
+            {
+                children(i, child) = 1;
+            }
         }
     }
 }
@@ -224,9 +265,32 @@ arma::vec delta_common(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
 
 double get_delta_d(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
 {
-    arma::vec common;
-
-    common = delta_common(xpxinv, row_in, row_out);
-
+    arma::vec common = delta_common(xpxinv, row_in, row_out);
     return common(0);
+}
+
+double adaptalpha(arma::vec alpha, arma::uvec swap)
+{
+    double output;
+    if (arma::sum(swap) > 0)
+    {
+        output = arma::dot(alpha, swap) / arma::sum(swap);
+    }
+    else
+    {
+        output = 0.5;
+    }
+
+    output = output + R::rnorm(0, 0.2);
+
+    if (output > 1)
+    {
+        output = 1;
+    }
+    else if (output < 0)
+    {
+        output = 0;
+    }
+
+    return output;
 }
