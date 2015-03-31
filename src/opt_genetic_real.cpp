@@ -15,6 +15,8 @@ void grcreep(arma::mat &, uint, double size, double);
 void grmutat(arma::mat &, uint, double);
 void grbound(arma::mat &, uint, double);
 double adaptalpha(arma::vec, arma::uvec);
+arma::vec getterm(int, arma::vec, int);
+arma::ivec orderprimes(arma::ivec);
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
@@ -41,25 +43,27 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
     // all parents have their own child
     arma::mat children = parents;
 
-    // hard code ~X1 + X2 for now.  Later use primedecomp to get actual design
-    arma::mat X(n, 3), xpxi(3, 3);
-    arma::cube xpxinv(1 + parents.n_rows / n, 1 + parents.n_rows / n, M);
+    // K + 1 for K in formula plus intercept
+    arma::mat X(n, K + 1), xpxi(K + 1, K + 1);
+    arma::cube xpxinv(K + 1, K + 1, M);
 
     // Change in criterion
     double delta;
 
     // hard code D criterion for now add other criteria later.
-    for (int i = 0; i < M; ++i)
+    for (int child = 0; child < M; ++child)
     {
-        arma::vec Xv = parents.col(i);
+        // hard code an intercept
         for (int j = 0; j < n; j++)
         {
             X(j, 0) = 1;
         }
-        X.col(1) = Xv.subvec(0, n - 1);
-        X.col(2) = Xv.subvec(n, 2 * n -1);
+        for (int term = 0; term < K; ++term)
+        {
+            X.col(term + 1) = getterm(formula(term), parents.col(child), n);
+        }
         arma::inv(xpxi, X.t() * X);
-        xpxinv.slice(i) = xpxi;
+        xpxinv.slice(child) = xpxi;
     }
 
     arma::vec alphablend = arma::randu<arma::vec>(M);
@@ -69,6 +73,7 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
     arma::uvec swap(M);
 
     int iter = 0;
+
     while(iter < iterations)
     {
         arma::uvec second_parent = RcppArmadillo::sample(pidx, M, false);
@@ -82,27 +87,46 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
             grmutat(children, child, alphamutat(child));
             grbound(children, child, alphabound(child));
 
-            // NEED TO UPDATE THESE THINGS FOR THE STUFF
             // HARD CODE AN INTERCEPT FOR NOW.  ADD OPTION LATER.
             for (int j = 0; j < n; ++j)
             {
                 X(j, 0) = 1;
             }
 
-            X.col(1) = parents.col(child).subvec(0, n - 1);
-            X.col(2) = parents.col(child).subvec(n, 2 * n - 1);
-
-            for (int i = 0; i < n; ++i)
+            // step over columns (terms in model) of X matrix and compute that
+            // column
+            for (int term = 0; term < K; ++term)
             {
-                delta = 0;
-                if (X(i, 1) != children(i, child) | X(i, 2) != children(i + n, child))
+                X.col(term + 1) = getterm(formula(term), parents.col(child), n);
+            }
+
+            // accumulate delta for all rows that changed
+            delta = 0;
+            for (int x_row = 0; x_row < n; ++x_row)
+            {
+                // flag to indicate this row has changed
+                int flag = 0;
+                for (int k = 0; k < K; ++k)
                 {
-                    arma::mat rowin(1, 3);
+                    // If any of the childs entry that goes into the nth row has
+                    // changed
+                    int idx = k * n + x_row;
+                    if (parents(idx, child) != children(idx, child))
+                    {
+                        flag = 1;
+                        k = K + 1;
+                    }
+                }
+                if (flag)
+                {
+                    arma::mat rowin(1, K + 1);
                     rowin(0, 0) = 1;
-                    rowin(0, 1) = children(i, child);
-                    rowin(0, 2) = children(i + n, child);
-                    delta += get_delta_d(xpxinv.slice(child), rowin, X.row(i));
-                    X.row(i) = rowin;
+                    for (int k = 0; k < K; ++k)
+                    {
+                        rowin(0, k + 1) = (getterm(formula(k), children.col(child), n))(x_row);
+                    }
+                    delta += get_delta_d(xpxinv.slice(child), rowin, X.row(x_row));
+                    X.row(x_row) = rowin;
                 }
             }
             swap(child) = 0;
@@ -141,13 +165,11 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
 // the secondary parent
 void grblend(arma::mat & children, uint child, arma::mat parents, arma::uvec parent2, double alpha)
 {
-    int i;
-
-    for (i=0; i<children.n_rows; ++i)
+    for (int i=0; i<children.n_rows; ++i)
     {
         if (R::runif(0, 1) < alpha)
         {
-            children(i, child) = parents(i, parent2[i]);
+            children(i, child) = parents(i, parent2[child]);
         }
     }
 }
@@ -258,7 +280,6 @@ arma::vec delta_common(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
 
     delta = ((1 + dii) * (1 - doo) + dio * dio - 1);
 
-
     common(0) = delta;
     common(1) = dii;
     common(2) = doo;
@@ -297,4 +318,73 @@ double adaptalpha(arma::vec alpha, arma::uvec swap)
     }
 
     return output;
+}
+
+arma::ivec orderprimes(arma::ivec primes)
+{
+    arma::ivec indices(primes.n_elem);
+
+    for (int i = 0; i < primes.n_elem; ++i)
+    {
+        if (primes(i) == 2)
+        {
+            indices(i) = 1;
+        }
+        else if (primes(i) == 3)
+        {
+            indices(i) = 2;
+        } else if (primes(i) == 5)
+        {
+            indices(i) = 3;
+        } else if (primes(i) == 7)
+        {
+            indices(i) = 4;
+        }
+        else if (primes(i) == 11)
+        {
+            indices(i) = 5;
+        }
+        else if (primes(i) == 13)
+        {
+            indices(i) = 6;
+        }
+        else if (primes(i) == 17)
+        {
+            indices(i) = 7;
+        }
+        else if (primes(i) == 19)
+        {
+            indices(i) = 8;
+        }
+        else if (primes(i) == 23)
+        {
+            indices(i) = 9;
+        }
+        else if (primes(i) == 29)
+        {
+            indices(i) = 10;
+        }
+        else
+        {
+            indices(i) = 1;
+        }
+    }
+    return indices;
+}
+
+arma::vec getterm(int formula, arma::vec x, int n)
+{
+    arma::ivec primes = primedecomp(formula);
+    arma::ivec factors = orderprimes(primes);
+
+    arma::vec column(n);
+    column.ones();
+
+    for (int i = 0; i < factors.n_elem; ++i)
+    {
+        int start = (factors(i) - 1) * n;
+        int stop = factors(i) * n - 1;
+        column = column % x.subvec(start, stop);
+    }
+    return column;
 }
