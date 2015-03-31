@@ -1,3 +1,5 @@
+[![Travis-CI Build Status](https://travis-ci.org/mdlerch/OptimalDesign.png?branch=master)](https://travis-ci.org/mdlerch/OptimalDesign)
+
 OptimalDesign
 =============
 
