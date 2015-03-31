@@ -36,6 +36,8 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
 
     // number of parameters
     int K = formula.n_elem;
+    // number of inputs
+    int K_in = parents.n_rows / n;
 
     // number of parents
     int M = parents.n_cols;
@@ -106,7 +108,7 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
             {
                 // flag to indicate this row has changed
                 int flag = 0;
-                for (int k = 0; k < K; ++k)
+                for (int k = 0; k < K_in; ++k)
                 {
                     // If any of the childs entry that goes into the nth row has
                     // changed
@@ -114,7 +116,7 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
                     if (parents(idx, child) != children(idx, child))
                     {
                         flag = 1;
-                        k = K + 1;
+                        k = K_in + 1;
                     }
                 }
                 if (flag)
@@ -258,41 +260,41 @@ arma::ivec primedecomp(int num)
     return primes;
 }
 
-arma::vec delta_common(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
-{
-    // Fedorov values as 1 by 1 matrices
-    arma::mat diim(1, 1), doom(1, 1), diom(1, 1);
-    // Fedorov values as doubles
-    double dii, doo, dio;
+// arma::vec delta_common(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
+// {
+//     // Fedorov values as 1 by 1 matrices
+//     arma::mat diim(1, 1), doom(1, 1), diom(1, 1);
+//     // Fedorov values as doubles
+//     double dii, doo, dio;
 
-    double delta;
+//     double delta;
 
-    arma::vec common(4);
+//     arma::vec common(4);
 
-    diim = row_in * xpxinv * row_in.t();
-    doom = row_out * xpxinv * row_out.t();
-    diom = row_in * xpxinv * row_out.t();
+//     diim = row_in * xpxinv * row_in.t();
+//     doom = row_out * xpxinv * row_out.t();
+//     diom = row_in * xpxinv * row_out.t();
 
-    // Fedorov values as double
-    dii = diim(0, 0);
-    doo = doom(0, 0);
-    dio = diom(0, 0);
+//     // Fedorov values as double
+//     dii = diim(0, 0);
+//     doo = doom(0, 0);
+//     dio = diom(0, 0);
 
-    delta = ((1 + dii) * (1 - doo) + dio * dio - 1);
+//     delta = ((1 + dii) * (1 - doo) + dio * dio - 1);
 
-    common(0) = delta;
-    common(1) = dii;
-    common(2) = doo;
-    common(3) = dio;
+//     common(0) = delta;
+//     common(1) = dii;
+//     common(2) = doo;
+//     common(3) = dio;
 
-    return common;
-}
+//     return common;
+// }
 
-double get_delta_d(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
-{
-    arma::vec common = delta_common(xpxinv, row_in, row_out);
-    return common(0);
-}
+// double get_delta_d(arma::mat xpxinv, arma::mat row_in, arma::mat row_out)
+// {
+//     arma::vec common = delta_common(xpxinv, row_in, row_out);
+//     return common(0);
+// }
 
 double adaptalpha(arma::vec alpha, arma::uvec swap)
 {

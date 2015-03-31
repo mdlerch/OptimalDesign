@@ -5,8 +5,8 @@ initDesign <- function(X, design_size, repeated) {
     .Call('OptimalDesign_initDesign', PACKAGE = 'OptimalDesign', X, design_size, repeated)
 }
 
-opt_geneticrealcpp <- function(parents, n, iterations, pidx) {
-    .Call('OptimalDesign_opt_geneticrealcpp', PACKAGE = 'OptimalDesign', parents, n, iterations, pidx)
+opt_geneticrealcpp <- function(parents, n, formula, iterations, pidx) {
+    .Call('OptimalDesign_opt_geneticrealcpp', PACKAGE = 'OptimalDesign', parents, n, formula, iterations, pidx)
 }
 
 opt_montecarlocpp <- function(Xc, current, candidateidx, Xe, crit, iterations, repeated) {
