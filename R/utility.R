@@ -38,7 +38,7 @@ getEff <- function(formula, design, evaluation, criteria = c("D", "A", "I", "G")
             # Var(x \beta ) = x Var(\beta) x' = \sigma x (X'X)^{-1} x'
             # spv2 <- N * diag(evaluation %*% M %*% t(evaluation))
             # apply(N * t(evaluation) * (infoMat %*% t(evaluation)), 2, sum)
-            spv <- N * apply(evaluation %*% M * evaluation, 1, sum)
+            spv <- apply(evaluation %*% M * evaluation, 1, sum)
 
             if (G)
             {

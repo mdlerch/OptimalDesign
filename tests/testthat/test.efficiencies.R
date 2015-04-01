@@ -15,12 +15,12 @@ test_that("2^2 factorial", {
     expect_equal(
         getEff(formula1, design = X1, criteria = "A")$A,
         100)
-    expect_more_than(
-        getEff(formula1, design = X1, evaluation = Xe, criteria = "I")$I,
-        1.28)
+    expect_less_than(abs(
+        getEff(formula1, design = X1, evaluation = Xe, criteria = "I")$I
+        - 0.64), .1)
     expect_equal(
         getEff(formula1, design = X1, evaluation = Xe, criteria = "G")$G,
-        50)
+        100)
 })
 
 Xccd <- data.frame(X1 = c(rep(-1, 5), rep(0, 8), rep(1, 5)),
