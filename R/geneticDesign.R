@@ -27,5 +27,20 @@ geneticdesign <- function(formula, dataframe, n, criterion = "D", iter = 100000,
         parents[ , i] <- runif(n * K_in, -1, 1)
     }
 
-    opt_geneticrealcpp(parents, n, theformula, iter, (1:M) - 1)
+    children <- opt_geneticrealcpp(parents, n, theformula, iter, (1:M) - 1)
+
+
+    Cbest <- -5
+    for (i in 1:M)
+    {
+        child <- data.frame(matrix(children[ , i], nrow = n, byrow = FALSE))
+        names(child) <- names(dataframe)
+        Cstar <- getEff(formula, child, criteria = "D")$D
+        if (Cstar > Cbest)
+        {
+            Cbest <- Cstar
+            bestmodel <- child
+        }
+    }
+    bestmodel
 }

@@ -20,3 +20,12 @@ out <- opt_geneticrealcpp(parents, n, c(2, 3, 6), 100000, (1:M) - 1)
 
 cbind(out[ , 1], parents[ , 1])
 
+
+library(OptimalDesign)
+
+
+formula <- ~X1 * X2
+design <- data.frame(X1 = 2, X2 = 3)
+
+geneticdesign(formula = formula, dataframe = design, n = 4, criterion = "D")
+

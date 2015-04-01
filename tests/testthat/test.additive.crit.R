@@ -8,7 +8,7 @@ X <- expand.grid(X1, X2)
 names(X) <- c("X1", "X2")
 formula <- ~X1 + X2
 
-test_that("Find the 2^2 factorial", {
+test_that("Find the 2^2 factorial with opt-montecarlo", {
     expect_more_than(
         getEff(formula,
                optimalDesign(formula, X, 4, "D", 1000000),
@@ -19,16 +19,43 @@ test_that("Find the 2^2 factorial", {
                optimalDesign(formula, X, 4, "A", 1000000),
                criteria = "A")$A,
     73)
-    expect_less_than(abs(
+    expect_less_than(
         getEff(formula,
               optimalDesign(formula, X, 4, "I", 1000000),
               evaluation = X,
-              criteria = "I")$I
-        - 1.06), .1)
+              criteria = "I")$I,
+        2)
     expect_less_than(abs(
         getEff(formula,
-               optimalDesign(formula, X, 4, "D", 1000000),
+               optimalDesign(formula, X, 4, "G", 10000),
                evaluation = X,
                criteria = "G")$G
         - 100), .1)
 })
+
+test_that("Find the 2^2 factorial with opt-genetic", {
+    expect_more_than(
+        getEff(formula,
+               geneticdesign(formula, X, 4, "D", iter = 100000, 10),
+               criteria = "D")$D,
+        99)
+})
+
+    # expect_more_than(
+    #     getEff(formula,
+    #            optimalDesign(formula, X, 4, "A", 1000000),
+    #            criteria = "A")$A,
+    # 73)
+    # expect_less_than(abs(
+    #     getEff(formula,
+    #           optimalDesign(formula, X, 4, "I", 1000000),
+    #           evaluation = X,
+    #           criteria = "I")$I
+    #     - 1.06), .1)
+    # expect_less_than(abs(
+    #     getEff(formula,
+    #            optimalDesign(formula, X, 4, "D", 1000000),
+    #            evaluation = X,
+    #            criteria = "G")$G
+    #     - 100), .1)
+# })
