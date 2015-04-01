@@ -33,6 +33,6 @@
 \author{Michael Lerch and John Sherrill}
 \seealso{Point to code \code{\link{...}}}
 \examples{
-    geneticdesign(~X1 + X2, data.frame(X1=1, X2=1), "D")
+    geneticdesign(~X1 + X2, data.frame(X1=1, X2=1), n = 4, "D")
 }
 \keyword{Optimal Design, experimental design, genetic algorithm}
