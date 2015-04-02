@@ -122,19 +122,22 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
                     rowin(0, 0) = 1;
                     for (int k = 0; k < K; ++k)
                     {
-                        rowin(0, k + 1) = (getXcolumn(formula(k), children.col(child), n))(x_row);
+                        rowin(0, k + 1) = (getXcolumn(formula(k),
+                                                      children.col(child),
+                                                      n))(x_row);
                     }
                     delta += get_delta_d(xpxinv.slice(child), rowin, X.row(x_row));
                     X.row(x_row) = rowin;
                 }
             }
 
-            // 4. If delta > 0 accept
+            // 4. If delta > 0 and X'X invertible, accept
             swap(child) = 0;
             if (delta > 0)
             {
-                if (arma::inv(xpxi, X.t() * X))
+                if (cond(X.t() * X) > 1e15)
                 {
+                    xpxi = inv(X.t() * X);
                     parents.col(child) = children.col(child);
                     xpxinv.slice(child) = xpxi;
                     swap(child) = 1;
@@ -165,7 +168,8 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
 }
 
 // Blend parents
-void grblend(arma::mat & children, uint child, arma::mat parents, arma::uvec parent2, double alpha)
+void grblend(arma::mat & children, uint child, arma::mat parents,
+             arma::uvec parent2, double alpha)
 {
     for (int i = 0; i < children.n_rows; ++i)
     {
