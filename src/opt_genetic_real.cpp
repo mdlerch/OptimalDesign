@@ -135,7 +135,7 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
             swap(child) = 0;
             if (delta > 0)
             {
-                if (cond(X.t() * X) > 1e15)
+                if (cond(X.t() * X) < 1e15)
                 {
                     xpxi = inv(X.t() * X);
                     parents.col(child) = children.col(child);
