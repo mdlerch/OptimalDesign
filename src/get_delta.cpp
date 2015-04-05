@@ -101,7 +101,7 @@ double get_delta_g(double g_crit_old, arma::mat X, arma::mat U_can)
     leverages = arma::sum(svd_thing, 1);
     g_crit = leverages.max();
 
-    delta = g_crit - g_crit_old;
+    delta = g_crit_old - g_crit;
     
     return delta;
 }
