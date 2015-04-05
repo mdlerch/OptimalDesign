@@ -7,17 +7,17 @@ optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
         stop("Requested design larger than candidate set and repeated trials not set")
     }
 
-    # convert dataframe of design points to matrix of model points
+    ## convert dataframe of design points to matrix of model points
     candidateX <- model.matrix(formula, candidate)
     evaluationX <- model.matrix(formula, evaluation)
 
-    # initial indices
+    ## initial indices
     current <- initDesign(candidateX, n, repeated)
 
     criteria <- c("D", "A", "G", "I")
     criterion <- match.arg(criterion, criteria)
 
-    # initial set of legal swaps depends on repeated option
+    ## initial set of legal swaps depends on repeated option
     if (repeated)
     {
         candidateidx <- (0:(nrow(candidate) - 1))
@@ -55,6 +55,6 @@ optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
         stop("Only D, A, G, and I criteria are currently supported")
     }
 
-    # R indices start with 1
+    ## R indices start with 1
     candidate[current + 1, ]
 }

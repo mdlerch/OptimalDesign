@@ -70,9 +70,7 @@ double get_delta_g(double g_crit_old, arma::mat X, arma::mat U_can)
     arma::vec leverages = arma::sum(svd_thing, 1);
     double g_crit = leverages.max();
 
-    double delta = g_crit - g_crit_old;
-
-    return delta;
+    return g_crit_old - g_crit;
 }
 
 double get_delta_i(arma::mat xpxinv, arma::mat row_in, arma::mat row_out, arma::mat B)
