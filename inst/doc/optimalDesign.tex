@@ -48,7 +48,7 @@
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
-\usepackage{fullpage, graphicx, amsmath}
+\usepackage{fullpage, graphicx, amsmath, hyperref}
 
 \newcommand{\Var}{\mathrm{Var}}
 \newcommand{\Cov}{\mathrm{Cov}}
@@ -76,7 +76,7 @@ Much of what is available in evaluation and comparison of RSM designs as well as
 
 \section{Scaled Prediction Variance Function Derivation}
 
-Say there are $p$ parameters in the above model. If $\textbf{b}$ is the OLS estimate of $\beta$ then the variance of the predicted values is given by
+Say there are $p$ parameters in the above model. If $\textbf{b}$ is the OLS estimate of $\beta$ then the variance of the predicted values\footnote{See \url{http://en.wikipedia.org/wiki/Mean_and_predicted_response}} is given by
 \begin{align*}
   \Var[\hat{\textbf{y}}(\textbf{x}) | X] &= \Var[\textbf{xb}] \\
   &= \Var[x_1 b_1 + x_2 b_2 + \cdots + x_p b_b] \\

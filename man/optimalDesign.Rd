@@ -21,8 +21,12 @@
         repeated.  If FALSE, use each candidate point at most once}
 }
 \details{
-    For the "D", "A", and "G", criterion, the Fedorov algorithm is used to find an optimal
-    design.  The "I" criterion is not supported yet.
+    A Monte-Carlo-modified Fedorov search algorithm is used to find an optimal
+    design with respect to a particular design criterion. Currently, the
+    D, A, I, and G criterions are supported, but the G criterion doesn't
+    work well. See the vignette for the \code{OptimalDesign} package for
+    a presentation of these criterions and an explination of the
+    modified Fedorov search algorithm.
 }
 \value{A data.frame.  A subset of \code{candidate} of length \code{n}.  Points
     may be repeated.}

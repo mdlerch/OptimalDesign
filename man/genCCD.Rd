@@ -17,17 +17,41 @@
     arbitrary number of center points, and user specified axial points.  The
     user can specify the radial distance of the axial points.
 
-    Central Composite Designs were developed by Box and Wilson
+    Central Composite Designs (CCD) were developed by Box and Wilson
     (1951) and are often used when a second order model is being
     considered. The design contains three components:
     \enumerate{
       \item a full factorial design
-      \item a set of center points (points of the form \eqn{(0,0,\ldots,0)}
       \item a set of axial points, (points of the form
       \eqn{(x_1,x_2,\ldots,x_p)} where \eqn{x_i=\pm \alpha} for only one
       \eqn{i} and \eqn{x_j=0} all other \eqn{j} not equal to \eqn{i})
+      \item a set of center points (points of the form \eqn{(0,0,\ldots,0)}
     }
 
+    For example, a CCD containing 1) a \eqn{2^3} factorial design, 2) 3
+    center points, and 3) axial points with \eqn{\alpha = \sqrt{2}}
+    is
+    \tabular{ccc}{
+      X1 \tab X2 \tab X3 \cr
+      -1 \tab -1 \tab -1 \cr
+      -1 \tab -1 \tab 1 \cr
+      -1 \tab 1 \tab -1 \cr
+      -1 \tab 1 \tab 1 \cr
+      1 \tab -1 \tab -1 \cr
+      1 \tab -1 \tab 1 \cr
+      1 \tab 1 \tab -1 \cr
+      1 \tab 1 \tab 1 \cr
+      \eqn{\sqrt{2}} \tab 0 \tab 0 \cr
+      \eqn{-\sqrt{2}} \tab 0 \tab 0 \cr
+      0 \tab \eqn{\sqrt{2}} \tab 0 \cr
+      0 \tab \eqn{-\sqrt{2}} \tab 0 \cr
+      0 \tab 0 \tab \eqn{\sqrt{2}} \cr
+      0 \tab 0 \tab \eqn{-\sqrt{2}} \cr
+      0 \tab 0 \tab 0 \cr
+      0 \tab 0 \tab 0 \cr
+      0 \tab 0 \tab 0
+    }
+    
     Let \eqn{F} denote the size of the factorial component of the
     design and let \eqn{T = 2k + n_{center}} the number of axial and
     center points in the design. To generate a rotatable design chose
@@ -36,7 +60,7 @@
     \sqrt{F})^2)^{1/4}} (Myers, 2014).
   
     It's possible to use fractional factorial designs instead of full
-    factorial designs in creating centeral composite designs. These are
+    factorial designs in creating central composite designs. These are
     referred to as small composite designs (SCD) and where introduced by
     Hartley (1959). However, these are not yet supported by
     \code{OptimalDesign}.

@@ -11,15 +11,13 @@
         to variables in the formula}
 }
 \details{
-    The scaled prediction variance equation is an expression for the
-    variance of predicted values determined from a model fit using a
-    particular design.
+  Generates a human readable scaled prediction variance (SPV) function given a
+  specified design \eqn{X} and formula. See the vignette for the
+  \code{OptimalDesign} package for a presentation on scaled prediction
+  variance function and it's utility.
 
-    You might want to check out
-    \link{http://en.wikipedia.org/wiki/Mean_and_predicted_response}
-
-    Probably should put in a nice discussion on prediction variance and
-    the criteria generated.
+  This function utilizes a homebrewed computer algebra system and the
+  fundamental theorem of arithmetic to generate the SPV function.
 }
 
 \value{A string containing the SPV equation}
