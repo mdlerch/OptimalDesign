@@ -4,6 +4,7 @@
 #include<armadillo>
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
+#include <math.h>
 
 //using namespace Rcpp;
 using namespace std;
@@ -12,19 +13,22 @@ using namespace std;
 
 //double get_delta_g(double, arma::mat, arma::mat);
 
+
+// use this to print cube
+// cube[(int)(iter / pow(size,2))][(int)(iter/size) % size][iter % size];
+
 // [[Rcpp::export]]
 int main()
 {
-    int size = 10;
+    int size = 3;
 
     // cells that contain zeros and ones
-    int zeros[size*size*(size-1)][3];
-    int ones[size*size][3];
+    int cube[size][size][size];
 
     // generate the most basic latin square
-    // there's gotta be a more susinct way to do this
-    int o_fill = 0;
-    int z_fill = 0;
+    // i is row
+    // j is column
+    // k is letter
     int i, j, k;
     
     for(i = 0; i<size; i++)
@@ -35,20 +39,12 @@ int main()
             {
                 if((i + j) % size == k)
                 {
-                    ones[o_fill][0] = i;
-                    ones[o_fill][1] = j;
-                    ones[o_fill][2] = k;
-
-                    o_fill++;
-                }
+                    cube[i][j][k] = 1;
+		}
                 else
                 {
-                    zeros[z_fill][0] = i;
-                    zeros[z_fill][1] = j;
-                    zeros[z_fill][2] = k;
-
-                    z_fill++;
-                }
+		    cube[i][j][k] = 0;
+		}
             }
         }
     }
@@ -58,22 +54,74 @@ int main()
     srand(time(NULL));
     rand();
 
-    int z_index;
-    int negone[3];
-    int iterations = 100;
+    // indexing values
+    int z_row;
+    int z_col;
+    int z_let;
+
+    int w1_let;
+    int w2_col;
+    int w3_row;
+
+    bool negone = 0;
+    int iterations = pow(size, 3);
+    int iter;
     
-    for(i = 0; i < iterations; i++)
+    for(iter = 0; iter < iterations; iter++)
     {
-        if(negone[2] == -1)
+        if(negone == 0) // if we have a proper incidence cube with no -1
         {
 	    // choose a random zero-cell
-            z_index = rand() % (size * size * (size - 1));
+            do
+	    {
+		z_row = rand() % size;
+		z_col = rand() % size;
+		z_let = rand() % size;
+	    }
+	    while(cube[z_row][z_col][z_let]);
 
-            // find the one-cells that have the same row, column, or letter as z
-            for(j = 0; j < size; j++)
-            {
+	    // find the 1-cells that will make the permutation sub-cube
+	    for(k = 0; k < size; k++){
+		if(cube[z_row][z_col][k])
+		{
+		    w1_let = k;
+		}
+		if(cube[z_row][k][z_let])
+		{
+		    w2_col = k;
+		}
+		if(cube[k][z_col][z_let])
+		{
+		    w3_row = k;
+		}
+	    }
 
-            }
+	    if(cube[w3_row][w2_col][w1_let])
+	    {
+		cube[z_row][z_col][z_let] = 1;
+		cube[z_row][z_col][w1_let] = 0;
+		cube[z_row][w2_col][z_let] = 0;
+		cube[w3_row][z_col][z_let] = 0;
+		cube[z_row][w2_col][w1_let] = 1;
+		cube[w3_row][z_col][w1_let] = 1;
+		cube[w3_row][w2_col][z_let] = 1;
+		cube[w3_row][w2_col][w1_let] = 0;
+	    }
+	    else
+	    {
+		cube[z_row][z_col][z_let] = 1;
+		cube[z_row][z_col][w1_let] = 0;
+		cube[z_row][w2_col][z_let] = 0;
+		cube[w3_row][z_col][z_let] = 0;
+		cube[z_row][w2_col][w1_let] = 1;
+		cube[w3_row][z_col][w1_let] = 1;
+		cube[w3_row][w2_col][z_let] = 1;
+		cube[w3_row][w2_col][w1_let] = -1;
+	    }
         }
+	else
+	{
+	    
+	}
     }
 }
