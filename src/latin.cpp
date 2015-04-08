@@ -64,13 +64,15 @@ int main()
     
     for(i = 0; i < iterations; i++)
     {
-        if(negone[2] == -1){
-            // choose a random zero-cell
+        if(negone[2] == -1)
+        {
+	    // choose a random zero-cell
             z_index = rand() % (size * size * (size - 1));
 
             // find the one-cells that have the same row, column, or letter as z
             for(j = 0; j < size; j++)
             {
+
             }
         }
     }
