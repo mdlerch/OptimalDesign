@@ -27,10 +27,10 @@ test_that("Find the 2^2 factorial with opt-montecarlo", {
         2)
     expect_less_than(abs(
         getEff(formula,
-               optimalDesign(formula, X, 4, "G", 10000),
+           optimalDesign(formula, X, 4, "G", 50000),
                evaluation = X,
                criteria = "G")$G
-        - 100), .1)
+        - 100), 2)
 })
 
 test_that("Find the 2^2 factorial with opt-genetic", {
