@@ -10,44 +10,70 @@ using namespace Rcpp;
 arma::uvec initDesign(const arma::mat& X, int design_size, int repeated);
 RcppExport SEXP OptimalDesign_initDesign(SEXP XSEXP, SEXP design_sizeSEXP, SEXP repeatedSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< int >::type design_size(design_sizeSEXP);
-    Rcpp::traits::input_parameter< int >::type repeated(repeatedSEXP);
-    __result = Rcpp::wrap(initDesign(X, design_size, repeated));
-    return __result;
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP );
+        Rcpp::traits::input_parameter< int >::type design_size(design_sizeSEXP );
+        Rcpp::traits::input_parameter< int >::type repeated(repeatedSEXP );
+        arma::uvec __result = initDesign(X, design_size, repeated);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// main
+int main();
+RcppExport SEXP OptimalDesign_main() {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        int __result = main();
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP
 }
 // opt_geneticrealcpp
 arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula, int iterations, arma::uvec pidx);
 RcppExport SEXP OptimalDesign_opt_geneticrealcpp(SEXP parentsSEXP, SEXP nSEXP, SEXP formulaSEXP, SEXP iterationsSEXP, SEXP pidxSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< arma::mat >::type parents(parentsSEXP);
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< arma::ivec >::type formula(formulaSEXP);
-    Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP);
-    Rcpp::traits::input_parameter< arma::uvec >::type pidx(pidxSEXP);
-    __result = Rcpp::wrap(opt_geneticrealcpp(parents, n, formula, iterations, pidx));
-    return __result;
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< arma::mat >::type parents(parentsSEXP );
+        Rcpp::traits::input_parameter< int >::type n(nSEXP );
+        Rcpp::traits::input_parameter< arma::ivec >::type formula(formulaSEXP );
+        Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP );
+        Rcpp::traits::input_parameter< arma::uvec >::type pidx(pidxSEXP );
+        arma::mat __result = opt_geneticrealcpp(parents, n, formula, iterations, pidx);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP
 }
 // opt_montecarlocpp
 arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current, arma::uvec candidateidx, const arma::mat& Xe, int crit, int iterations, bool repeated);
 RcppExport SEXP OptimalDesign_opt_montecarlocpp(SEXP XcSEXP, SEXP currentSEXP, SEXP candidateidxSEXP, SEXP XeSEXP, SEXP critSEXP, SEXP iterationsSEXP, SEXP repeatedSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< const arma::mat& >::type Xc(XcSEXP);
-    Rcpp::traits::input_parameter< arma::uvec >::type current(currentSEXP);
-    Rcpp::traits::input_parameter< arma::uvec >::type candidateidx(candidateidxSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Xe(XeSEXP);
-    Rcpp::traits::input_parameter< int >::type crit(critSEXP);
-    Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP);
-    Rcpp::traits::input_parameter< bool >::type repeated(repeatedSEXP);
-    __result = Rcpp::wrap(opt_montecarlocpp(Xc, current, candidateidx, Xe, crit, iterations, repeated));
-    return __result;
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< const arma::mat& >::type Xc(XcSEXP );
+        Rcpp::traits::input_parameter< arma::uvec >::type current(currentSEXP );
+        Rcpp::traits::input_parameter< arma::uvec >::type candidateidx(candidateidxSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type Xe(XeSEXP );
+        Rcpp::traits::input_parameter< int >::type crit(critSEXP );
+        Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP );
+        Rcpp::traits::input_parameter< bool >::type repeated(repeatedSEXP );
+        arma::uvec __result = opt_montecarlocpp(Xc, current, candidateidx, Xe, crit, iterations, repeated);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP
 }

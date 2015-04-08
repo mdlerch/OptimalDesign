@@ -1,41 +1,77 @@
-#include <RcppArmadillo.h>
-#include <algorithm>
+//#include <RcppArmadillo.h>
+//#include <algorithm>
 
-using namespace Rcpp;
+#include<armadillo>
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+
+//using namespace Rcpp;
 using namespace std;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-double get_delta_g(double, arma::mat, arma::mat);
-double get_delta_d(arma::mat, arma::mat, arma::mat);
-double get_delta_a(arma::mat, arma::mat, arma::mat);
-double get_delta_i(arma::mat, arma::mat, arma::mat, arma::mat);
-arma::vec delta_common(arma::mat, arma::mat, arma::mat);
+//double get_delta_g(double, arma::mat, arma::mat);
 
 // [[Rcpp::export]]
-arma::uvec latin(int n, int iterations)
+int main()
 {
+    int size = 10;
 
-  // cells that contain zeros and ones
-  arma::mat zeros;
-  arma::mat ones;
+    // cells that contain zeros and ones
+    int zeros[size*size*(size-1)][3];
+    int ones[size*size][3];
 
-  // index of Xc (complete candidate set) to insert
-    int in;
-    // index of current (to remove) out == current(out_c) - 1
-    int out_c;
-    // index of Xc (complete candidate set) to remove
-    int out;
+    // generate the most basic latin square
+    // there's gotta be a more susinct way to do this
+    int o_fill = 0;
+    int z_fill = 0;
+    int i, j, k;
+    
+    for(i = 0; i<size; i++)
+    {
+        for(j = 0; j<size; j++)
+        {
+            for(k = 0; k<size; k++)
+            {
+                if((i + j) % size == k)
+                {
+                    ones[o_fill][0] = i;
+                    ones[o_fill][1] = j;
+                    ones[o_fill][2] = k;
 
-    // number of points in candidate set
-    int N = candidateidx.n_rows;
-    // number of design points to use
-    int n = current.n_rows;
+                    o_fill++;
+                }
+                else
+                {
+                    zeros[z_fill][0] = i;
+                    zeros[z_fill][1] = j;
+                    zeros[z_fill][2] = k;
 
-    // Swapping condition delta > 0 == good
-    double delta;
+                    z_fill++;
+                }
+            }
+        }
+    }
 
-    // Get (X'X)^{-1}
-    arma::mat xpxinv;
-    arma::mat X = Xc.rows(current);
-    arma::inv(xpxinv, X.t() * X);
+    // this random number generator is kinda lame on my machine
+    // i can watch it increase
+    srand(time(NULL));
+    rand();
+
+    int z_index;
+    int negone[3];
+    int iterations = 100;
+    
+    for(i = 0; i < iterations; i++)
+    {
+        if(negone[2] == -1){
+            // choose a random zero-cell
+            z_index = rand() % (size * size * (size - 1));
+
+            // find the one-cells that have the same row, column, or letter as z
+            for(j = 0; j < size; j++)
+            {
+            }
+        }
+    }
+}

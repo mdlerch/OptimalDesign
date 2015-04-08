@@ -73,6 +73,9 @@ arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current,
     arma::vec leverages = arma::sum(svd_thing, 1);
     double g_crit = leverages.max();
 
+    // need potential design for g-crit
+    arma::uvec potential = current;
+
     int iter = 0;
     while (iter < iterations)
     {
@@ -98,7 +101,8 @@ arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current,
         }
         else if (crit == 3) // Criteria G
         {
-            delta = get_delta_g(g_crit, Xc.rows(current), U_can);
+            potential(out_c) = in;
+            delta = get_delta_g(g_crit, Xc.rows(potential), U_can);
         }
         else if (crit == 4) // Criteria I
         {
