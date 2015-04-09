@@ -40,7 +40,7 @@
 \value{A list of numbers}
 \author{Michael Lerch and John Sherrill}
 \examples{
-     candidate <- genFactorial(100, 2)
+     candidate <- genFactorial(2, 100)
      candidate <- candidate / max(candidate)
      getEff(~ X1 + X2, genFactorial(2, 2), candidate)
 }
