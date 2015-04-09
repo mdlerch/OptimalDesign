@@ -25,7 +25,7 @@
 \details{
     A Monte-Carlo-modified Fedorov search algorithm is used to find an optimal
     design with respect to a particular design criterion. Currently, the
-    D, A, I, and G criterions are supported, but the G criterion doesn't
+    D, A, I, and G criterions are supported, but the G criterion does not
     work well. See the vignette for the \code{OptimalDesign} package for
     a presentation of these criterions and an explination of the
     modified Fedorov search algorithm.
