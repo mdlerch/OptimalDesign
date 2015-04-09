@@ -6,17 +6,19 @@
     one of several design criteria.
 }
 \usage{optimalDesign(formula, candidate, n, criterion = "D", iter = 10000,
-                     repeated = FALSE)}
+                          evaluation = candidate, repeated = TRUE)
 \arguments{
     \item{formula}{an object of class 'formula'.  The model to be fitted based
         on the experiment.}
     \item{candidate}{a data frame. The candidate set of design points}
     \item{n}{an integer.  The number of design points to be used in the final
         design.}
-    \item{criterion}{A string.  The criterion to maximize.  One of "D", "A",
+    \item{criterion}{a string.  The criterion to maximize.  One of "D", "A",
         "G", or "I".}
     \item{iter}{an integer.  The number of iterations to use in the
         maximization routine.}
+    \item{evaluation}{a data frame.  The set of points on which to evaluate "G"
+        or "I" criteria.  Defaults to candidate set}
     \item{repeated}{boolean.  If TRUE allow each candidate point to potentially
         repeated.  If FALSE, use each candidate point at most once}
 }
