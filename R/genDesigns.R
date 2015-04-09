@@ -70,8 +70,8 @@ genCCD <- function(n_factors, n_center, alpha)
 genLatin <- function(size, iterations)
 {
     design = opt_genLatin(size, iterations)
-    
-    noquote(matrix(LETTERS[design], size, size))
+
+    noquote(matrix(LETTERS[design + 1], size, size))
 }
 
 # I think we'll need this before we get to box-behnken:
