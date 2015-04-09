@@ -40,7 +40,7 @@ genCCD <- function(n_factors, n_center, alpha)
         n_center <- 1
     }
 
-    A <- as.matrix(genFactorial(2, n_factors))
+    A <- as.matrix(genFactorial(n_factors, 2))
     C <- matrix(0, nrow = n_center, ncol = n_factors)
 
     CCDcol <- function(n_factors, col)
