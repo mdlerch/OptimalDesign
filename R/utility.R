@@ -143,9 +143,9 @@ spvEquation <- function(formula, design)
     modelMat <- model.matrix(formula, design)
     infoMat <- solve(t(modelMat) %*% modelMat)
 
-    # obtain prime numbers to  represent variables
+    ## obtain prime numbers to  represent variables
     primes <- primeGen(ncol(design))
-    primes <- data.frame(t(primes))
+    primes <- data.frame(t(primes)) # do we need the transpose here?
     names(primes) <- names(design)
     
     # get products of prime numbers corresponding to products of variables
@@ -174,7 +174,7 @@ spvEquation <- function(formula, design)
     coef.primed <- lapply(coef[,2], primeDecomp)
 
     # create data.frame for primes and the variable names to be able to index
-    variable.names <- data.frame(primes, names(design))
+    variable.names <- data.frame(t(primes), names(design))
 
     # initialize string to print out SPV
     spv.string <- as.character(coef[1])

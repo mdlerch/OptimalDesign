@@ -4,10 +4,10 @@
 \description{
     Generate a factorial design at arbitrary levels and variables
 }
-\usage{genFactorial(n_levels, n_terms)}
+\usage{genFactorial(n_factors, n_levels)}
 \arguments{
-    \item{n_levels}{an integer. The number of levels for each factor.}
-    \item{n_factors}{an integer.  The number of factors.}
+  \item{n_factors}{an integer.  The number of factors.}
+  \item{n_levels}{an integer. The number of levels for each factor.}
 }
 \details{
     Generate a factorial design of arbitrary levels and factors.  The factor

@@ -7,7 +7,8 @@
 ##                           FACTORIAL DESIGN                            ##
 ###########################################################################
 
-genFactorial <- function(n_levels, n_factors)
+
+genFactorial <- function(n_factors, n_levels)
 {
     # construct levels
     if (n_levels %% 2) # odd
@@ -70,7 +71,6 @@ genCCD <- function(n_factors, n_center, alpha)
 genLatin <- function(size, iterations)
 {
     design = opt_genLatin(size, iterations)
-
     noquote(matrix(LETTERS[design + 1], size, size))
 }
 

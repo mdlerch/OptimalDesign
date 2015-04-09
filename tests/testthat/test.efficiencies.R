@@ -2,11 +2,11 @@ library(OptimalDesign)
 context("Check efficiency calculations")
 
 # Make a dataset
-X1 <- genFactorial(n_levels = 2, n_factors = 2)
+X1 <- genFactorial(n_factors = 2, n_levels = 2)
 formula1 <- ~X1 + X2
 
 # Large evaluation set
-Xe <- genFactorial(n_levels = 100, n_factors = 2) / 99
+Xe <- genFactorial(n_factors = 2, n_levels = 100) / 99
 
 test_that("2^2 factorial", {
     expect_equal(
@@ -26,7 +26,7 @@ test_that("2^2 factorial", {
 Xccd <- data.frame(X1 = c(rep(-1, 5), rep(0, 8), rep(1, 5)),
                    X2 = c(-1, -1, 0, 1, 1, -1, rep(0, 6), 1, -1, -1, 0, 1, 1),
                    X3 = c(-1, 1, 0, -1, 1, 0, -1, 0, 0, 0, 0, 1, 0, -1, 1, 0, -1, 1))
-Xe <- genFactorial(n_levels = 100, n_factors = 3) / 99
+Xe <- genFactorial(n_factors = 3, n_levels = 100) / 99
 
 fccd <- ~X1*X2 + X1*X3 + X2*X3 + I(X1^2) + I(X2^2) + I(X3^2)
 
