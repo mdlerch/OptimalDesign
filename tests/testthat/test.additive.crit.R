@@ -30,7 +30,7 @@ test_that("Find the 2^2 factorial with opt-montecarlo", {
            optimalDesign(formula, X, 4, "G", 50000),
                evaluation = X,
                criteria = "G")$G
-        - 100), 2)
+        - 100), 4)
 })
 
 test_that("Find the 2^2 factorial with opt-genetic", {
