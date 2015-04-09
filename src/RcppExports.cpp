@@ -23,14 +23,16 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
-// main
-int main();
-RcppExport SEXP OptimalDesign_main() {
+// opt_genLatin
+arma::umat opt_genLatin(int size, int iterations);
+RcppExport SEXP OptimalDesign_opt_genLatin(SEXP sizeSEXP, SEXP iterationsSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        int __result = main();
+        Rcpp::traits::input_parameter< int >::type size(sizeSEXP );
+        Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP );
+        arma::umat __result = opt_genLatin(size, iterations);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

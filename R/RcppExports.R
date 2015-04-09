@@ -5,8 +5,8 @@ initDesign <- function(X, design_size, repeated) {
     .Call('OptimalDesign_initDesign', PACKAGE = 'OptimalDesign', X, design_size, repeated)
 }
 
-main <- function() {
-    .Call('OptimalDesign_main', PACKAGE = 'OptimalDesign')
+opt_genLatin <- function(size, iterations) {
+    .Call('OptimalDesign_opt_genLatin', PACKAGE = 'OptimalDesign', size, iterations)
 }
 
 opt_geneticrealcpp <- function(parents, n, formula, iterations, pidx) {
