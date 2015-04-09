@@ -6,7 +6,7 @@
     one of several design criteria.
 }
 \usage{optimalDesign(formula, candidate, n, criterion = "D", iter = 10000,
-                          evaluation = candidate, repeated = TRUE)
+                          evaluation = candidate, repeated = TRUE)}
 \arguments{
     \item{formula}{an object of class 'formula'.  The model to be fitted based
         on the experiment.}
