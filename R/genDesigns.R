@@ -7,19 +7,19 @@
 ##                           FACTORIAL DESIGN                            ##
 ###########################################################################
 
-genFactorial <- function(n.levels, n.factors)
+genFactorial <- function(n_levels, n_factors)
 {
     # construct levels
-    if (n.levels %% 2) # odd
+    if (n_levels %% 2) # odd
     {
-        levels <- 1:n.levels - mean(1:n.levels)
+        levels <- 1:n_levels - mean(1:n_levels)
     }
     else # even
     {
-        levels <- (1:n.levels - mean(1:n.levels)) * 2
+        levels <- (1:n_levels - mean(1:n_levels)) * 2
     }
 
-    repeatedLevels <- data.frame(replicate(n.factors,levels))
+    repeatedLevels <- data.frame(replicate(n_factors,levels))
 
     expand.grid(repeatedLevels)
 }
@@ -61,6 +61,17 @@ genCCD <- function(n_factors, n_center, alpha)
     E <- E * alpha
 
     as.data.frame(rbind(A, E, C))
+}
+
+###########################################################################
+##                       Fractional-Factorial Design                     ##
+###########################################################################
+
+genLatin <- function(size, iterations)
+{
+    design = opt_genLatin(size, iterations)
+    
+    noquote(matrix(LETTERS[design], size, size))
 }
 
 # I think we'll need this before we get to box-behnken:
