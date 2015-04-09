@@ -186,7 +186,7 @@ spvEquation <- function(formula, design)
     for(i in setdiff(which(coef[,1] != 0), 1))
   	{
         spv.string <- paste(spv.string, "+", coef[i])
-        print(variable.names)
+
         for(j in 1:nrow(coef.primed[[i]]))
         {
             prime <- coef.primed[[i]]$primeNums[j]
