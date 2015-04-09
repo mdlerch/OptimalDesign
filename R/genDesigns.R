@@ -7,7 +7,7 @@
 ##                           FACTORIAL DESIGN                            ##
 ###########################################################################
 
-genFactorial <- function(n_levels, n_factors)
+genFactorial <- function(n_factors, n_levels)
 {
     # construct levels
     if (n_levels %% 2) # odd
