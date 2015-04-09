@@ -69,8 +69,6 @@
 \author{Michael Lerch and John Sherrill}
 \seealso{genFactorial}
 \examples{
-    genCCD(4)
-    genCCD(4, 2)
     genCCD(4, 2, sqrt(2))
 }
 \keyword{design generation}
