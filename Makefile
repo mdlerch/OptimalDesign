@@ -14,7 +14,7 @@ check: $(PKG_NAME)_$(PKG_VERS).tar.gz
 	R CMD check $<
 
 clean:
-	-rm $(PKG_NAME)_$(PKG_VERS).tar.gz
+	-rm $(PKG_NAME)_*.tar.gz
 	-rm -rf $(PKG_NAME).Rcheck
 
 $(PKG_NAME)_$(PKG_VERS).tar.gz: DESCRIPTION
