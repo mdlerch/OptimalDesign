@@ -3,7 +3,7 @@ Type: Package
 Title: Optimize experimental designs based on several design criteria.
 Version: 0.5.1
 Date: 2015-5-27
-Author: Michael Lerch, John Sherrill
+Author: Michael Lerch, John Sherrill, Jordan Schupbach
 Maintainer: Michael Lerch <mdlerch@gmail.com>
 Description: Optimize experimental designs based on several criteria.
 License: MIT
