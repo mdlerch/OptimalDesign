@@ -1,11 +1,12 @@
 Package: OptimalDesign
 Type: Package
-Title: Optimize experimental designs based on several design criteria.
-Version: 0.5.1
-Date: 2015-5-27
+Title: Optimize Experimental Designs Based on Several Design Criteria.
+Version: 0.5.2
+Date: 2015-9-26
 Author: Michael Lerch, John Sherrill, Jordan Schupbach
 Maintainer: Michael Lerch <mdlerch@gmail.com>
 Description: Optimize experimental designs based on several criteria.
 License: MIT
 Imports: Rcpp (>= 0.11.2)
 LinkingTo: RcppArmadillo, Rcpp
+BuildVignettes: no

@@ -1,3 +1,4 @@
+%\VignetteEngine{knitr::knitr}
 \documentclass{article}
 \usepackage{fullpage, graphicx, amsmath, hyperref}
 

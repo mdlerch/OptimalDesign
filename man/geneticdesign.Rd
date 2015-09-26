@@ -26,12 +26,8 @@
     characteristics.  All variables are allowed to range from -1 to 1.
 }
 \value{A 'data.frame'.}
-\references{Use \url{} of \href{}{} for web}
-\note{
-   Not necessary, Pie charts are very bad way of ....
-}
 \author{Michael Lerch and John Sherrill}
-\seealso{Point to code \code{\link{...}}}
+\seealso{Point to code \code{optimalDesign}}
 \examples{
     geneticdesign(~X1 + X2, data.frame(X1=1, X2=1), n = 4, "D")
 }

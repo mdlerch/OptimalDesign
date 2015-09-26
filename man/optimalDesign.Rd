@@ -32,7 +32,6 @@
 }
 \value{A data.frame.  A subset of \code{candidate} of length \code{n}.  Points
     may be repeated.}
-\references{Use \url{} or \href{}{} for web}
 \author{Michael Lerch and John Sherrill}
 \examples{
     cand <- genFactorial(2, 4)
