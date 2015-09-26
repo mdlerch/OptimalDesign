@@ -12,31 +12,36 @@ formula <- ~X1 + X2
 optD <- optimalDesign(formula, X, 4, "D", 1000000)
 if (getEff(formula, optD, criteria = "D")$D < 99)
 {
-    stop(paste(context, "D"))
+    msg <- paste("Test: > 99. Observed:", Deff)
+    stop(paste(context, "D", msg))
 }
 
 optA <- optimalDesign(formula, X, 4, "A", 1000000)
-if (getEff(formula, optA, criteria = "A")$A < 73)
+if (Aeff <- getEff(formula, optA, criteria = "A")$A < 73)
 {
-    stop(paste(context, "A"))
+    msg <- paste("Test: > 73. Observed:", Aeff)
+    stop(paste(context, "A", msg))
 }
 
 optI <- optimalDesign(formula, X, 4, "I", 1000000)
-if (getEff(formula, optI, criteria = "I", evaluation = X)$I > 3)
+if (Ieff <- getEff(formula, optI, criteria = "I", evaluation = X)$I > 3)
 {
-    stop(paste(context, "I"))
+    msg <- paste("Test: < 3. Observed:", Ieff)
+    stop(paste(context, "I", msg))
 }
 
 optG <- optimalDesign(formula, X, 4, "G", 50000)
-if (getEff(formula, optG, criteria = "G", evaluation = X)$G < 96)
+if (Geff <- getEff(formula, optG, criteria = "G", evaluation = X)$G < 96)
 {
-    stop(paste(context, "G"))
+    msg <- paste("Test: > 96. Observed:", Ieff)
+    stop(paste(context, "G", msg))
 }
 
 context <- "2^2 factorial with genetic"
 
 optD <- geneticdesign(formula, X, 4, "D", iter = 1000000, 10)
-if (getEff(formula, optD, criteria = "D")$D < 99)
+if (Deff <- getEff(formula, optD, criteria = "D")$D < 99)
 {
-    stop(paste(context, "D"))
+    msg <- paste("Test > 99. Observed:", Deff)
+    stop(paste(context, "D", msg))
 }
