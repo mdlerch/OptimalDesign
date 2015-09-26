@@ -11,7 +11,7 @@ install: $(PKG_NAME)_$(PKG_VERS).tar.gz
 build: $(PKG_NAME)_$(PKG_VERS).tar.gz
 
 check: $(PKG_NAME)_$(PKG_VERS).tar.gz
-	R CMD check $<
+	R CMD check --as-cran $<
 
 clean:
 	-rm $(PKG_NAME)_*.tar.gz
