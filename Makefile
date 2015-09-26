@@ -1,4 +1,4 @@
-all: clean vignettes install
+all: clean install
 
 PKG_VERS = $(shell grep -i ^version DESCRIPTION | cut -d : -d \  -f 2)
 PKG_NAME = $(shell grep -i ^package DESCRIPTION | cut -d : -d \  -f 2)
@@ -24,5 +24,5 @@ $(PKG_NAME)_$(PKG_VERS).tar.gz: DESCRIPTION
 vignettes: inst/doc/optimalDesign.pdf
 
 inst/doc/optimalDesign.pdf: vignettes/optimalDesign.Rnw
-	Rscript -e "knitr:knit2pdf(\"vignettes/optimalDesign.Rnw\")"
+	Rscript -e "knitr::knit2pdf(\"vignettes/optimalDesign.Rnw\")"
 	mv vignettes/optimalDesign.pdf inst/doc/
