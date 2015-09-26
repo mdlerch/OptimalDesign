@@ -48,11 +48,12 @@ optimalDesign <- function(formula, candidate, n, criterion = "D", iter = 10000,
     }
     else if (criterion == "I")
     {
-        current <- opt_montecarlocpp(candidateX, current, candidateidx, evaluationX, 4, iter, repeated)
+        # current <- opt_montecarlocpp(candidateX, current, candidateidx, evaluationX, 4, iter, repeated)
+        stop("I criteria not currently supported")
     }
     else
     {
-        stop("Only D, A, G, and I criteria are currently supported")
+        stop("Only D, A, and G, criteria are currently supported")
     }
 
     ## R indices start with 1

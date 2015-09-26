@@ -23,12 +23,12 @@ if (Aeff <- getEff(formula, optA, criteria = "A")$A < 73)
     stop(paste(context, "A", msg))
 }
 
-optI <- optimalDesign(formula, X, 4, "I", 1000000)
-if (Ieff <- getEff(formula, optI, criteria = "I", evaluation = X)$I > 3)
-{
-    msg <- paste("Test: < 3. Observed:", Ieff)
-    stop(paste(context, "I", msg))
-}
+# optI <- optimalDesign(formula, X, 4, "I", 1000000)
+# if (Ieff <- getEff(formula, optI, criteria = "I", evaluation = X)$I > 3)
+# {
+#     msg <- paste("Test: < 3. Observed:", Ieff)
+#     stop(paste(context, "I", msg))
+# }
 
 optG <- optimalDesign(formula, X, 4, "G", 50000)
 if (Geff <- getEff(formula, optG, criteria = "G", evaluation = X)$G < 96)
