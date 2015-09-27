@@ -33,7 +33,7 @@ if (Aeff <- getEff(formula, optA, criteria = "A")$A < 73)
 optG <- optimalDesign(formula, X, 4, "G", 50000)
 if (Geff <- getEff(formula, optG, criteria = "G", evaluation = X)$G < 96)
 {
-    msg <- paste("Test: > 96. Observed:", Ieff)
+    msg <- paste("Test: > 96. Observed:", Geff)
     stop(paste(context, "G", msg))
 }
 
