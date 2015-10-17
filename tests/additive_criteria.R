@@ -54,3 +54,5 @@ context <- "2^2 factorial with genetic"
 test(getEff(formula, geneticdesign(formula, X, 4, "D", 1000000, 10), criteria = "D")$D,
      99, bigger = TRUE, context = "2^2 factorial Monte Carlo D")
 
+test(getEff(formula, geneticdesign(formula, X, A, "D", 1000000, 10), criteria = "A")$A,
+     99, bigger = TRUE, context = "2^2 factorial Monte Carlo A")

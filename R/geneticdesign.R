@@ -1,7 +1,7 @@
 geneticdesign <- function(formula, dataframe, n, criterion = "D", iter = 100000,
-                          M = 10)
+                          M = 10, evo = T)
 {
-    if (criterion != "D")
+    if (! (criterion %in% c("D", "A")))
     {
         stop("Only D criterion currently available")
     }
@@ -27,20 +27,36 @@ geneticdesign <- function(formula, dataframe, n, criterion = "D", iter = 100000,
         parents[ , i] <- runif(n * K_in, -1, 1)
     }
 
-    children <- opt_geneticrealcpp(parents, n, theformula, iter, (1:M) - 1)
-
-
-    Cbest <- -5
-    for (i in 1:M)
+    if (criterion == "D")
     {
-        child <- data.frame(matrix(children[ , i], nrow = n, byrow = FALSE))
-        names(child) <- names(dataframe)
-        Cstar <- getEff(formula, child, criteria = "D")$D
-        if (Cstar > Cbest)
-        {
-            Cbest <- Cstar
-            bestmodel <- child
-        }
+        children <- opt_geneticrealcpp(parents, n, theformula, iter, (1:M) - 1, crit = 1, evo)
+    } else if (criterion == "A")
+    {
+        children <- opt_geneticrealcpp(parents, n, theformula, iter, (1:M) - 1, crit = 2, evo)
     }
-    bestmodel
+
+    return(children)
+
+
+
+    # Cbest <- -5
+    # for (i in 1:M)
+    # {
+    #     child <- data.frame(matrix(children[ , i], nrow = n, byrow = FALSE))
+    #     names(child) <- names(dataframe)
+    #     if (criterion == "D")
+    #     {
+    #         Cstar <- getEff(formula, child, criteria = "D")$D
+    #     } else if (criterion == "A")
+    #     {
+    #         Cstar <- getEff(formula, child, criteria = "A")$A
+    #     }
+
+    #     if (Cstar > Cbest)
+    #     {
+    #         Cbest <- Cstar
+    #         bestmodel <- child
+    #     }
+    # }
+    # bestmodel
 }

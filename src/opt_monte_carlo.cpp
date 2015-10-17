@@ -101,7 +101,7 @@ arma::uvec opt_montecarlocpp(const arma::mat& Xc, arma::uvec current,
         }
         else if (crit == 3) // Criteria G
         {
-  	    potential = current;
+            potential = current;
             potential(out_c) = in;
             delta = get_delta_g(g_crit, Xc.rows(potential), U_can);
         }

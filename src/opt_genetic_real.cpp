@@ -22,17 +22,19 @@ arma::ivec orderprimes(arma::ivec);
 
 // [[Rcpp::export]]
 arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
-                             int iterations, arma::uvec pidx)
+                             int iterations, arma::uvec pidx, int crit, int evo)
 {
     // parents is a matrix with each row being a vector of the design points
-    //  with the first n being the first variable, the second n being the second
-    //  varaible etc.
+    //   with the first n being the first variable, the second n being the
+    //   second variable etc.
     // n is the design size
     // formula is a vector of prime numbers that allows us to build the X matrix
-    //  based on just the inputs which are provided by parents.
+    //   based on just the inputs which are provided by parents.
     // iterations is the number of iterations of the genetic algorithm
     // pidx (parent index) is just 1:M where M is number of parents; easier to
-    //  pass than write in c++!
+    //   pass than write in c++!
+    // crit is the criterion to optimize
+    // evo return the evolution history (1) or just last parents (0)
 
     // number of parameters
     int K = formula.n_elem;
@@ -74,6 +76,9 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
     arma::vec alphamutat = arma::randu<arma::vec>(M);
     arma::vec alphabound = arma::randu<arma::vec>(M);
     arma::uvec swap(M);
+
+    // set of all attempts
+    arma::cube childevolution(K, M, iterations);
 
     int iter = 0;
     while(iter < iterations)
@@ -126,7 +131,26 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
                                                       children.col(child),
                                                       n))(x_row);
                     }
-                    delta += get_delta_d(xpxinv.slice(child), rowin, X.row(x_row));
+                    if (crit == 1) // Criterion D
+                    {
+                        delta += get_delta_d(xpxinv.slice(child), rowin, X.row(x_row));
+                    }
+                    else if (crit == 2) // Criterion A
+                    {
+                        delta += get_delta_a(xpxinv.slice(child), rowin, X.row(x_row));
+                    }
+                    else if (crit == 3) // Criterion G
+                    {
+                        //body;
+                    }
+                    else if (crit == 4) // Criterion I
+                    {
+                        //body;
+                    }
+
+
+
+
                     X.row(x_row) = rowin;
                 }
             }
@@ -161,10 +185,25 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
             }
         }
 
+        for (int child = 0; child < M; ++child)
+        {
+            for (int k = 0; k < K; ++k)
+            {
+                childevolution(child, k, iter) = children(child, k);
+            }
+        }
+
         iter++;
     }
 
-    return parents;
+    if (evo)
+    {
+        return childevolution;
+    }
+    else
+    {
+        return parents;
+    }
 }
 
 // Blend parents

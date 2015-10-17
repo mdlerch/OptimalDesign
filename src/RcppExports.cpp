@@ -32,8 +32,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // opt_geneticrealcpp
-arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula, int iterations, arma::uvec pidx);
-RcppExport SEXP OptimalDesign_opt_geneticrealcpp(SEXP parentsSEXP, SEXP nSEXP, SEXP formulaSEXP, SEXP iterationsSEXP, SEXP pidxSEXP) {
+arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula, int iterations, arma::uvec pidx, int crit, int evo);
+RcppExport SEXP OptimalDesign_opt_geneticrealcpp(SEXP parentsSEXP, SEXP nSEXP, SEXP formulaSEXP, SEXP iterationsSEXP, SEXP pidxSEXP, SEXP critSEXP, SEXP evoSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -42,7 +42,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::ivec >::type formula(formulaSEXP);
     Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP);
     Rcpp::traits::input_parameter< arma::uvec >::type pidx(pidxSEXP);
-    __result = Rcpp::wrap(opt_geneticrealcpp(parents, n, formula, iterations, pidx));
+    Rcpp::traits::input_parameter< int >::type crit(critSEXP);
+    Rcpp::traits::input_parameter< int >::type evo(evoSEXP);
+    __result = Rcpp::wrap(opt_geneticrealcpp(parents, n, formula, iterations, pidx, crit, evo));
     return __result;
 END_RCPP
 }

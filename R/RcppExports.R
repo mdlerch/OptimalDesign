@@ -9,8 +9,8 @@ opt_genLatin <- function(size, iterations) {
     .Call('OptimalDesign_opt_genLatin', PACKAGE = 'OptimalDesign', size, iterations)
 }
 
-opt_geneticrealcpp <- function(parents, n, formula, iterations, pidx) {
-    .Call('OptimalDesign_opt_geneticrealcpp', PACKAGE = 'OptimalDesign', parents, n, formula, iterations, pidx)
+opt_geneticrealcpp <- function(parents, n, formula, iterations, pidx, crit, evo) {
+    .Call('OptimalDesign_opt_geneticrealcpp', PACKAGE = 'OptimalDesign', parents, n, formula, iterations, pidx, crit, evo)
 }
 
 opt_montecarlocpp <- function(Xc, current, candidateidx, Xe, crit, iterations, repeated) {
