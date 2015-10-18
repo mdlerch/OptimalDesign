@@ -1,6 +1,33 @@
 library(OptimalDesign)
 
-context <- "2^2 factorial with monte carlo"
+test <- function(ans, value, bigger = TRUE, context = "")
+{
+    m <- 1
+    if (!bigger)
+    {
+        m <- -1
+    }
+
+    ans <- ans * m
+    value <- value * m
+
+    if (bigger)
+    {
+        ineq <- ">"
+    } else
+    {
+        ineq <- "<"
+    }
+    msg <- paste(context, ":" , ineq, value, ". Observed:", ans)
+    if (ans < value)
+    {
+        stop(msg)
+    } else
+    {
+        cat(paste(msg, "\n"))
+    }
+
+}
 
 # Make a dataset
 X1 <- seq(-1, 1, .01)
@@ -9,39 +36,21 @@ X <- expand.grid(X1, X2)
 names(X) <- c("X1", "X2")
 formula <- ~X1 + X2
 
-optD <- optimalDesign(formula, X, 4, "D", 1000000)
-if (getEff(formula, optD, criteria = "D")$D < 99)
-{
-    msg <- paste("Test: > 99. Observed:", Deff)
-    stop(paste(context, "D", msg))
-}
+test(getEff(formula, optimalDesign(formula, X, 4, "D", 1000000), criteria = "D")$D,
+     99, bigger = TRUE, context = "2^2 factorial Monte Carlo D")
 
-optA <- optimalDesign(formula, X, 4, "A", 1000000)
-if (Aeff <- getEff(formula, optA, criteria = "A")$A < 73)
-{
-    msg <- paste("Test: > 73. Observed:", Aeff)
-    stop(paste(context, "A", msg))
-}
+test(getEff(formula, optimalDesign(formula, X, 4, "A", 1000000), criteria = "A")$A,
+     73, bigger = TRUE, context = "2^2 factorial Monte Carlo A")
 
-# optI <- optimalDesign(formula, X, 4, "I", 1000000)
-# if (Ieff <- getEff(formula, optI, criteria = "I", evaluation = X)$I > 3)
-# {
-#     msg <- paste("Test: < 3. Observed:", Ieff)
-#     stop(paste(context, "I", msg))
-# }
+# test(getEff(optimalDesign(formula, X, 4, "I", 1000000), criteria = "I")$I,
+#      3, bigger = FALSE, context = "2^2 factorial Monte Carlo I")
 
-optG <- optimalDesign(formula, X, 4, "G", 50000)
-if (Geff <- getEff(formula, optG, criteria = "G", evaluation = X)$G < 96)
-{
-    msg <- paste("Test: > 96. Observed:", Geff)
-    stop(paste(context, "G", msg))
-}
+test(getEff(formula, optimalDesign(formula, X, 4, "G", 100000), evaluation = X, criteria = "G")$G,
+     96, bigger = TRUE, context = "2^2 factorial Monte Carlo G")
+
 
 context <- "2^2 factorial with genetic"
 
-optD <- geneticdesign(formula, X, 4, "D", iter = 1000000, 10)
-if (Deff <- getEff(formula, optD, criteria = "D")$D < 99)
-{
-    msg <- paste("Test > 99. Observed:", Deff)
-    stop(paste(context, "D", msg))
-}
+test(getEff(formula, geneticdesign(formula, X, 4, "D", 1000000, 10), criteria = "D")$D,
+     99, bigger = TRUE, context = "2^2 factorial Monte Carlo D")
+
