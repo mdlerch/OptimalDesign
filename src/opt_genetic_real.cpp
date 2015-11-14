@@ -78,7 +78,7 @@ arma::cube opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
     arma::uvec swap(M);
 
     // set of all attempts
-    arma::cube childevolution(K, M, iterations);
+    arma::cube childevolution(parents.n_rows, parents.n_cols, iterations);
 
 
     int iter = 0;
@@ -185,23 +185,25 @@ arma::cube opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
 
         for (int child = 0; child < M; ++child)
         {
-            for (int k = 0; k < K; ++k)
+            for (int k = 0; k < children.n_rows; ++k)
             {
-                childevolution(k, child, iter) = children(k, child);
+                childevolution(k, child, iter) = parents(k, child);
             }
         }
 
         iter++;
     }
 
-    if (evo)
-    {
-        return childevolution;
-    }
-    else
-    {
-        // return parents;
-    }
+    return childevolution;
+    // return parents;
+    // if (evo)
+    // {
+    //     return childevolution;
+    // }
+    // else
+    // {
+    //     return parents;
+    // }
 }
 
 // Blend parents

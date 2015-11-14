@@ -11,8 +11,19 @@ for (i in 1:M)
 formula <- ~X1 * X2
 design <- data.frame(X1 = 2, X2 = 3)
 
-out <- geneticdesign(formula = formula, dataframe = design, n = 4, crit = "D")
-geneticdesign(formula = formula, dataframe = design, n = 4, crit = "A")
+out <- geneticdesign(formula = formula, dataframe = design, n = 4, crit = "D", evo = FALSE)
+
+library(animation)
+ani.options(interval=.1)
+ani.options(autobrowse=FALSE)
+ani.options(autoplay=FALSE)
+saveGIF({
+for (i in 1:100)
+    {
+        plot(0,0, type = 'n', xlim = c(-1.1, 1.1), ylim = c(-1.1, 1.1))
+        points(out[1:4, 1, i], out[5:8, 1, i], pch = 19, col = c(1, 2, 3, 4), cex = 2)
+    }
+})
 
 
 for (i in 1:M)
