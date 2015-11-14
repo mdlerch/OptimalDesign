@@ -5,7 +5,7 @@
     Generate an optimal design on [-1,1] for an arbitrary linear model based on
     one of several design criteria.
 }
-\usage{geneticdesign(formula, dataframe, n, criterion = "D", iter = 100000, M = 10)}
+\usage{geneticdesign(formula, dataframe, n, criterion = "D", iter = 100000, M = 10, evo = FALSE)}
 \arguments{
     \item{formula}{an object of class 'formula'.  The model to be fitted based
         on the experiment}
@@ -20,6 +20,8 @@
         maximization routine.}
     \item{M}{an integer.  The number of parent or seed designs to be used in
         the algorithm}
+    \item{evo}{boolean.  If 'TRUE', return an array of the parent design
+        evolution.  If 'FALSE', return the top performing design.}
 }
 \details{
     A genetic algorithm is used to produce a design with optimal

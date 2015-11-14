@@ -1,5 +1,5 @@
 geneticdesign <- function(formula, dataframe, n, criterion = "D", iter = 100000,
-                          M = 10, evo = T)
+                          M = 10, evo = FALSE)
 {
     if (! (criterion %in% c("D", "A")))
     {
