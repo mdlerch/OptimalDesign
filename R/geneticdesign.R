@@ -35,28 +35,31 @@ geneticdesign <- function(formula, dataframe, n, criterion = "D", iter = 100000,
         children <- opt_geneticrealcpp(parents, n, theformula, iter, (1:M) - 1, crit = 2, evo)
     }
 
-    return(drop(children))
+    if (evo)
+    {
+        return(children)
+    } else {
+        children <- drop(children)
 
+        Cbest <- -5
+        for (i in 1:M)
+        {
+            child <- data.frame(matrix(children[ , i], nrow = n, byrow = FALSE))
+            names(child) <- names(dataframe)
+            if (criterion == "D")
+            {
+                Cstar <- getEff(formula, child, criteria = "D")$D
+            } else if (criterion == "A")
+            {
+                Cstar <- getEff(formula, child, criteria = "A")$A
+            }
 
-
-    # Cbest <- -5
-    # for (i in 1:M)
-    # {
-    #     child <- data.frame(matrix(children[ , i], nrow = n, byrow = FALSE))
-    #     names(child) <- names(dataframe)
-    #     if (criterion == "D")
-    #     {
-    #         Cstar <- getEff(formula, child, criteria = "D")$D
-    #     } else if (criterion == "A")
-    #     {
-    #         Cstar <- getEff(formula, child, criteria = "A")$A
-    #     }
-
-    #     if (Cstar > Cbest)
-    #     {
-    #         Cbest <- Cstar
-    #         bestmodel <- child
-    #     }
-    # }
-    # bestmodel
+            if (Cstar > Cbest)
+            {
+                Cbest <- Cstar
+                bestmodel <- child
+            }
+        }
+        return(bestmodel)
+    }
 }

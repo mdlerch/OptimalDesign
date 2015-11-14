@@ -11,7 +11,11 @@ for (i in 1:M)
 formula <- ~X1 * X2
 design <- data.frame(X1 = 2, X2 = 3)
 
+# get best model (no evolution)
 out <- geneticdesign(formula = formula, dataframe = design, n = 4, crit = "D", evo = FALSE)
+
+# get evolution path
+out <- geneticdesign(formula = formula, dataframe = design, n = 4, crit = "D", evo = TRUE)
 
 library(animation)
 ani.options(interval=.1)
