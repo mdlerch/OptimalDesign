@@ -1,5 +1,4 @@
 library(OptimalDesign)
-
 M <- 10
 n <- 4
 K_in <- 2

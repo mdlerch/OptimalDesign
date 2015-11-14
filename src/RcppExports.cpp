@@ -32,7 +32,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // opt_geneticrealcpp
-arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula, int iterations, arma::uvec pidx, int crit, int evo);
+arma::cube opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula, int iterations, arma::uvec pidx, int crit, int evo);
 RcppExport SEXP OptimalDesign_opt_geneticrealcpp(SEXP parentsSEXP, SEXP nSEXP, SEXP formulaSEXP, SEXP iterationsSEXP, SEXP pidxSEXP, SEXP critSEXP, SEXP evoSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;

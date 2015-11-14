@@ -21,7 +21,7 @@ arma::ivec orderprimes(arma::ivec);
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
+arma::cube opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
                              int iterations, arma::uvec pidx, int crit, int evo)
 {
     // parents is a matrix with each row being a vector of the design points
@@ -79,6 +79,7 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
 
     // set of all attempts
     arma::cube childevolution(K, M, iterations);
+
 
     int iter = 0;
     while(iter < iterations)
@@ -148,9 +149,6 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
                         //body;
                     }
 
-
-
-
                     X.row(x_row) = rowin;
                 }
             }
@@ -189,7 +187,7 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
         {
             for (int k = 0; k < K; ++k)
             {
-                childevolution(child, k, iter) = children(child, k);
+                childevolution(k, child, iter) = children(k, child);
             }
         }
 
@@ -202,7 +200,7 @@ arma::mat opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
     }
     else
     {
-        return parents;
+        // return parents;
     }
 }
 
