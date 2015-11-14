@@ -35,7 +35,7 @@ geneticdesign <- function(formula, dataframe, n, criterion = "D", iter = 100000,
         children <- opt_geneticrealcpp(parents, n, theformula, iter, (1:M) - 1, crit = 2, evo)
     }
 
-    return(children)
+    return(drop(children))
 
 
 

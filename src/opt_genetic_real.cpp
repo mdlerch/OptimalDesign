@@ -153,7 +153,7 @@ arma::cube opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
                 }
             }
 
-            // 4. If delta > 0 and X'X invertible, accept
+            // 4. If delta > 0 and X X invertible, accept
             swap(child) = 0;
             if (delta > 0)
             {
@@ -183,27 +183,22 @@ arma::cube opt_geneticrealcpp(arma::mat parents, int n, arma::ivec formula,
             }
         }
 
-        for (int child = 0; child < M; ++child)
-        {
-            for (int k = 0; k < children.n_rows; ++k)
-            {
-                childevolution(k, child, iter) = parents(k, child);
-            }
-        }
+        childevolution.slice(iter) = parents;
 
         iter++;
     }
 
-    return childevolution;
-    // return parents;
-    // if (evo)
-    // {
-    //     return childevolution;
-    // }
-    // else
-    // {
-    //     return parents;
-    // }
+    if (evo)
+    {
+        return childevolution;
+    }
+    else
+    {
+        // If just return parents, must return it as a cube type
+        arma::cube parentsout(parents.n_rows, parents.n_cols, 1);
+        parentsout.slice(0) = parents;
+        return parentsout;
+    }
 }
 
 // Blend parents
